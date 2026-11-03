@@ -199,6 +199,13 @@ label.lb{font-size:14px;font-weight:600;display:block;margin-bottom:6px}
 .sq-msg{font-family:var(--fira);font-size:13px;font-weight:600;line-height:1.3;background:#fff;border:1.5px dashed var(--ink3);border-radius:14px;padding:8px 10px;margin-bottom:34px;min-width:0}
 @media (max-width:419px){.sq-band img{height:128px}.sq-msg{display:none}}
 @media (min-width:600px){.sq-band img{height:185px}.sq-msg{font-size:14px;max-width:260px}}
+.etg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:4px}
+.etc{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+.etc img{height:50px;width:62px;max-width:100%;object-fit:contain}
+.etc.off img{opacity:.3}
+.etn{font-family:var(--fira);font-size:12px;font-weight:700;line-height:1.15;min-height:2.3em;display:flex;align-items:center}
+.ets{font-size:11px;font-weight:700}
+@media (min-width:600px){.etc img{height:64px;width:84px}.etn{font-size:13px}.ets{font-size:12px}}
 /* ---- adaptação a telemóveis e tablets ---- */
 /* telemóveis pequenos (≤ 360 px) */
 @media (max-width:360px){
@@ -403,7 +410,11 @@ function percurso(){
  return `<section class="card stack-s">
   <div class="between"><span class="h2" style="font-size:16px">Percurso da escola</span><span style="font-weight:700">${feitas()} de 28 sessões</span></div>
   <div class="lamps">${lit.map((l,i)=>lamp(l,50,FIL[i])).join('')}</div>
-  <div class="segs">${ee.map((e,i)=>`<div style="flex:${e.t}"><i style="width:${Math.round(e.f/e.t*100)}%;background:${ETAPAS[i].c}"></i></div>`).join('')}</div>
+  <div class="etg">${ee.map((e,i)=>{const E=ETAPAS[i];const curto=['Somos Luz!','Nosso Futuro','Nosso Caminho','Nossa Escola'][i];const on=e.f>0||e.now;return `<div class="etc${on?'':' off'}">
+   <img src="img/etapa-${i+1}.png" alt="" aria-hidden="true">
+   <span class="etn">${curto}</span>
+   <div class="track" style="height:7px;width:100%"><i style="width:${Math.round(e.f/e.t*100)}%;background:${E.c}"></i></div>
+   <span class="ets" style="color:${e.done?'var(--oki)':e.now?'var(--ink)':'var(--ink3)'}">${e.done?'✓ Concluída':e.f+' de '+e.t}</span></div>`}).join('')}</div>
   <span class="hand">${n} de 5 lâmpadas acesas. Cada etapa concluída acende mais uma!</span>
  </section>`;
 }
