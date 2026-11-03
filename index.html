@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#9bc97a">
+<meta name="description" content="Demo da app Somos Luz com as alterações propostas.">
+<title>Somos Luz — Protótipo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: coluna de telemóvel (máx. 430px). Identidade do Manual Somos Luz: verde da capa, uma cor por etapa
+   (amarelo, verde, azul, roxo), laranja para os Círculos, cinzento-escuro para ferramentas, lâmpadas e bandeirolas. */
+:root{
+  --capa:#9bc97a; --capa-soft:#eaf4e2;
+  --paper:#ffffff; --bg:#f6f6f2; --outer:#dfe7d7; --line:#e3e3dc; --line2:#efefe9;
+  --ink:#1a1a1a; --ink2:#4a4a48; --ink3:#6b6b68;
+  --lamp:#fedd16;
+  --e1:#fedd16; --e1s:#fff8c4; --e1i:#5c4d00;
+  --e2:#00a651; --e2s:#e0f4e8; --e2i:#05612d;
+  --e3:#01adee; --e3s:#ddf3fc; --e3i:#01577a;
+  --e4:#91278e; --e4s:#f4e4f3; --e4i:#6e1d6c;
+  --circ:#ed7d30; --circs:#fdeadb; --circi:#8a3d0c;
+  --tool:#58585a;
+  --ok:#00a651; --oks:#e0f4e8; --oki:#05612d;
+  --mid:#e0bc00; --mids:#fff8c4; --midi:#5c4d00;
+  --bad:#ce1f25; --bads:#fde3e3; --badi:#a3161b;
+  --body:'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fira:'Fira Sans', system-ui, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--outer);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.35}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--capa)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--e3);outline-offset:2px}
+.app{max-width:430px;margin:0 auto;min-height:calc(100vh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));background:var(--bg);display:flex;flex-direction:column;position:relative}
+.pad{padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
+.top{padding-block:16px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--capa);z-index:5}
+.top .tt{display:flex;flex-direction:column;min-width:0}
+.eyebrow{font-size:13px;color:#1a2a10;font-weight:500}
+.h1{font-size:26px;font-weight:700;letter-spacing:-.2px;margin:0;line-height:1.15;text-wrap:balance}
+.top .sub{color:#1a2a10}
+.h2{font-size:18px;font-weight:700;margin:0}
+.sub{font-size:13px;color:var(--ink2)}
+.hand{font-size:15px;line-height:1.35;color:var(--ink2);font-weight:500}
+.me{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none;border:0}
+.back{width:44px;height:44px;border-radius:50%;border:0;background:transparent;display:flex;align-items:center;justify-content:center;flex:none;margin-left:-10px}
+main.stack{display:flex;flex-direction:column;gap:14px;padding-block:16px 28px;flex:1}
+.card{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:16px}
+.card.tight{padding:4px 16px}
+.stack-s{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:12px}
+.between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.grow{flex:1;min-width:0}
+/* pincelada (como os títulos do manual) */
+.brush{font-family:var(--fira);display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:6px 16px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;border-radius:16px 8px 18px 10px / 12px 18px 10px 16px}
+.dash{border:0;border-top:2px dashed var(--line);margin:2px 0}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;border-radius:14px;border:0;font-weight:700;font-size:16px;width:100%;padding:0 16px;text-decoration:none}
+.btn.dark{background:var(--ink);color:#fff}
+.btn.lamp{background:var(--lamp);color:var(--ink)}
+.btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.btn.small{min-height:40px;font-size:14px;width:auto;padding:0 14px;border-radius:12px}
+.dashed{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border:2px dashed #b9b9b0;background:transparent;border-radius:14px;font-weight:700;width:100%}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.p-ok{background:var(--oks);color:var(--oki)}.p-mid{background:var(--mids);color:var(--midi)}.p-bad{background:var(--bads);color:var(--badi)}.p-grey{background:#eeeeea;color:var(--ink2)}
+.p-circ{background:var(--circs);color:var(--circi)}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex:none;color:var(--ink)}
+.c0{background:#fff3a6}.c1{background:#cdeefb}.c2{background:#cdeedb}.c3{background:#fbdcc6}.c4{background:#ecd3eb}
+.item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line2)}
+.item:last-child{border-bottom:0}
+.item .nm{font-weight:600;font-size:15px}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:0;background:transparent;display:flex;align-items:center;justify-content:center;flex:none}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:#e9e9e2;border-radius:14px;padding:4px;gap:4px}
+.seg button{border:0;background:transparent;border-radius:10px;min-height:46px;font-size:13px;font-weight:600;color:var(--ink2);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2}
+.seg button b{font-size:16px;color:var(--ink)}
+.seg .on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:11px;font-weight:800;padding:0 5px;margin-left:4px}
+.nav{position:sticky;bottom:0;background:#fff;border-top:1.5px solid var(--line);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:8px max(4px, env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(4px, env(safe-area-inset-right,0px));z-index:6}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;font-size:12px;color:var(--ink2);padding:0;min-height:52px;font-weight:500}
+.nav .ic{padding:4px 16px;border-radius:999px;display:flex}
+.nav .on{color:var(--ink);font-weight:700}
+.nav .on .ic{background:var(--lamp)}
+/* início */
+.big{font-size:54px;font-weight:700;line-height:1;letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+.bars{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:end;height:100px}
+.bar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.bar span{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.bar i{display:block;width:100%;border-radius:8px}
+.bar-l{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:-6px}
+.bar-l span{text-align:center;font-size:12px;color:var(--ink2)}
+.tile{background:var(--bg);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column}
+.tile b{font-size:30px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{font-size:15px;color:var(--ink2)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ctile{border-radius:16px;padding:14px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;border:2px solid transparent}
+.ctile b{font-size:36px;font-weight:700;line-height:1.1}
+.ctile span{font-size:13px;font-weight:700;text-align:center}
+.alert{display:flex;align-items:center;gap:10px;background:var(--bads);border-radius:14px;padding:12px 14px;color:var(--badi);font-weight:600}
+.ihead{display:flex;align-items:center;gap:10px}
+.ihead .sq{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:none}
+/* sessão em curso (cor da etapa) */
+.now{font-family:var(--fira);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;border:2px solid}
+.crumb{font-family:var(--fira);display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;border-bottom:1.5px solid var(--ink);padding-bottom:4px}
+.now h2{margin:0;font-size:21px;font-weight:700;line-height:1.25}
+.now .meta{font-size:14px;color:var(--ink2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.now .meta button{background:none;border:0;text-decoration:underline;text-underline-offset:3px;padding:6px 0;font-weight:600}
+.track{height:10px;background:#e9e9e2;border-radius:999px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:999px}
+.lamps{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.segs{display:flex;gap:4px}
+.segs div{height:8px;border-radius:999px;background:#e9e9e2;overflow:hidden}
+.segs i{display:block;height:100%}
+/* sessões */
+.etapa{background:#fff;border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.etapa>button{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;padding:12px 16px;text-align:left;min-height:64px}
+.srow{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;border-top:1px solid var(--line2);padding:10px 16px;text-align:left;min-height:60px}
+.num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none;font-variant-numeric:tabular-nums}
+.stype{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink2)}
+.stype.c{color:var(--circi);font-weight:600}
+/* guia */
+.gcard{background:var(--ink);color:#fff;border-radius:18px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.path{position:relative;width:340px;max-width:100%;margin:0 auto;overflow:hidden}
+.node{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;text-align:center;width:150px;background:none;border:0;padding:0}
+.node .circ{border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff}
+.node .fl{font-size:12px;color:var(--ink2);margin-top:4px}
+.node .fn{font-size:14px;font-weight:700;line-height:1.2}
+.node .fs{font-size:12px;font-weight:700}
+.now-tag{background:var(--ink);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;margin-bottom:6px}
+.trow{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--line2)}
+.trow:last-child{border-bottom:0}
+.countbox{background:var(--e1s);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.countbox input{width:72px;min-height:44px;border-radius:12px;border:1.5px solid #e6d36a;text-align:center;font-weight:700;font-size:18px;background:#fff}
+.cnt{background:#fff;border-radius:12px;padding:10px 6px;text-align:center}
+.cnt b{display:block;font-size:20px;font-weight:700}
+.cnt span{font-size:12px;color:var(--ink2)}
+/* casos */
+.caso{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.cbox{border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.cbox .k{font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px}
+/* avaliar */
+.note{display:flex;gap:10px;align-items:flex-start;border:2px dashed;border-radius:14px;padding:12px 14px}
+.ecard{background:#fff;border:1.5px solid var(--line);border-radius:18px;overflow:hidden}
+.ehead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 16px}
+.band{padding:8px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.mrow{padding:14px 16px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line2)}
+.pt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.opt{min-height:46px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-weight:600;font-size:14px}
+.opt.on.sim,.opt.on.pres{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.on.parc{background:var(--lamp);border-color:var(--lamp);color:var(--ink)}
+.opt.on.nao,.opt.on.falt{background:var(--bad);border-color:var(--bad);color:#fff}
+.chk{display:flex;align-items:center;gap:10px;min-height:46px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;font-weight:600;background:#fff;width:100%;text-align:left}
+.chk .bx{width:20px;height:20px;border-radius:5px;border:2px solid #8a8a85;display:flex;align-items:center;justify-content:center;flex:none}
+.chk.on{border-color:var(--bad);background:var(--bads)}
+.chk.on .bx{background:var(--bad);border-color:var(--bad)}
+/* lista de presenças das mentorandas e mentorandos (√ / X como na ficha do manual) */
+.kid{display:flex;align-items:center;gap:6px;border-top:1px solid var(--line2);padding:0 8px 0 0}
+.kid .tick{flex:1;min-width:0;display:flex;align-items:center;gap:12px;min-height:54px;background:none;border:0;padding:0 0 0 16px;text-align:left}
+.kid .bx{width:30px;height:30px;border-radius:8px;border:2px solid var(--ok);background:var(--ok);display:flex;align-items:center;justify-content:center;flex:none}
+.kid.off .bx{background:#fff;border-color:var(--bad)}
+.kid.off .kn{color:var(--ink3);text-decoration:line-through}
+.kid .kn{font-weight:600}
+.kid .flag{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.kid .flag.on{background:var(--bads);border-color:var(--bad)}
+.cs{position:relative;display:inline-flex;align-items:center;min-height:42px;padding:0 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-weight:600;font-size:14px;cursor:pointer}
+.cs input{position:absolute;opacity:0;pointer-events:none}
+.cs:has(input:checked){background:var(--bads);border-color:var(--bad);color:var(--badi)}
+.cs:has(input:focus-visible){outline:3px solid var(--e3);outline-offset:2px}
+.kidnote{padding:0 16px 12px 58px}
+textarea,input[type=text],input[type=date],input[type=number],select{width:100%;min-height:46px;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff;font-size:15px}
+textarea{min-height:76px;resize:vertical}
+label.lb{font-size:14px;font-weight:600;display:block;margin-bottom:6px}
+.foot{position:sticky;bottom:0;background:var(--bg);border-top:1.5px solid var(--line);padding-block:10px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px;z-index:6}
+/* recursos */
+.res{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;width:100%;text-align:left}
+/* folha + aviso */
+.sheet-wrap{position:fixed;inset:0;background:rgba(26,26,26,.45);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.sheet{background:#fff;width:100%;max-width:430px;border-radius:22px 22px 0 0;padding:20px max(16px, env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px));max-height:88vh;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.radio{display:flex;align-items:center;gap:10px;min-height:48px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;font-weight:500}
+.radio input{width:20px;height:20px;accent-color:var(--ink)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;z-index:60;max-width:calc(100% - 32px);text-align:center}
+.empty{text-align:center;padding:32px 16px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:10px}
+@media (prefers-reduced-motion: no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div id="sheet" hidden></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function(){
+/* ---------- ícones ---------- */
+const sv=(p,s=22,c='currentColor',w=2)=>`<svg aria-hidden="true" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const I={
+ home:s=>sv('<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',s),
+ flag:s=>sv('<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>',s),
+ users:(s,c)=>sv('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.2c2.2.6 3.5 2.6 3.5 5.8"/>',s,c),
+ cal:s=>sv('<rect x="3" y="4.5" width="18" height="16.5" rx="2"/><path d="M3 9.5h18"/><path d="M8 2.5v4"/><path d="M16 2.5v4"/>',s),
+ book:s=>sv('<path d="M3 5c3-1.5 6-1.5 9 0v15c-3-1.5-6-1.5-9 0z"/><path d="M21 5c-3-1.5-6-1.5-9 0v15c3-1.5 6-1.5 9 0z"/>',s),
+ back:s=>sv('<path d="M19 12H5"/><path d="m11 18-6-6 6-6"/>',s||24,'currentColor',2.4),
+ arrow:(s,c)=>sv('<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',s||18,c||'currentColor',2.4),
+ check:(s,c)=>sv('<path d="m5 12 5 5L20 7"/>',s||18,c||'currentColor',2.8),
+ xx:(s,c)=>sv('<path d="M6 6l12 12M18 6 6 18"/>',s||18,c||'currentColor',2.8),
+ alert:(s,c)=>sv('<path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18.5A2 2 0 0 0 3.5 21.5h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',s||20,c||'currentColor',2.2),
+ plus:s=>sv('<path d="M12 5v14M5 12h14"/>',s||18,'currentColor',2.4),
+ uadd:s=>sv('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M19 8v6M16 11h6"/>',s||20),
+ ucog:s=>sv('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6 1.4 0 2.6.3 3.6.9"/><circle cx="18" cy="17" r="2.5"/><path d="M18 12.5v2M18 19.5v2M13.5 17h2M20.5 17h2"/>',s||20),
+ send:s=>sv('<path d="M14 5h5v5"/><path d="M19 5 10 14"/><path d="M19 14v5H5V5h5"/>',s||18),
+ star:s=>`<svg aria-hidden="true" width="${s||16}" height="${s||16}" viewBox="0 0 24 24" fill="currentColor"><path d="m12 2.5 2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z"/></svg>`,
+ down:s=>sv('<path d="m6 9 6 6 6-6"/>',s||20),
+ up:s=>sv('<path d="m6 15 6-6 6 6"/>',s||20),
+ heart:(s,c)=>sv('<path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12C19 16.6 12 21 12 21z"/>',s||22,c),
+ mega:(s,c)=>sv('<path d="M3 10v4l11 5V5z"/><path d="M14 9a3 3 0 0 1 0 6"/><path d="M6 14.5 7.5 20h2.5l-1-4.4"/><path d="M18 5l2-2M19 9h3M18 13l2 2"/>',s||22,c),
+ x:s=>sv('<path d="M6 6l12 12M18 6 6 18"/>',s||22),
+ trend:(s,c)=>sv('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',s||22,c),
+ compass:(s,c)=>sv('<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',s||22,c),
+ people:(s,c)=>sv('<circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="12" cy="13" r="2.5"/><path d="M3 20c0-2.5 1.8-4 4-4M21 20c0-2.5-1.8-4-4-4M8 21c0-2.5 1.8-4 4-4s4 1.5 4 4"/>',s||22,c),
+ hands:(s,c)=>sv('<circle cx="12" cy="12" r="2"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5M5.6 5.6l3.5 3.5M14.9 14.9l3.5 3.5M18.4 5.6l-3.5 3.5M9.1 14.9l-3.5 3.5"/>',s||14,c),
+ pair:s=>sv('<circle cx="8" cy="7" r="2.6"/><circle cx="16" cy="7" r="2.6"/><path d="M4 20v-5a4 4 0 0 1 8 0v5M12 20v-5a4 4 0 0 1 8 0v5"/>',s||14),
+ pennant:(c,s)=>`<svg aria-hidden="true" width="${s||22}" height="${Math.round((s||22)*.6)}" viewBox="0 0 30 18"><path d="M2 2 28 9 2 16z" fill="${c}" stroke="#1a1a1a" stroke-width="1.6" stroke-linejoin="round"/></svg>`
+};
+/* lâmpada do manual: o filamento tem a cor da etapa */
+function lamp(lit,size,fil){
+ size=size||40; fil=fil||'#fedd16';
+ const stroke=lit?'#1a1a1a':'#b5b5ad';
+ const glow=lit?'<circle cx="24" cy="25" r="22" fill="#fedd16" opacity=".28"/>':'';
+ const rays=lit?'<g stroke="#1a1a1a" stroke-width="1.3" stroke-linecap="round"><path d="M24 3v4M11 8l2.5 3M37 8l-2.5 3M4 20h4M40 20h4M6 33l3.5-2M42 33l-3.5-2"/></g>':'';
+ return `<svg aria-hidden="true" width="${size}" height="${size}" viewBox="0 0 48 48">${glow}${rays}<path d="M24 12a10 10 0 0 0-6 18c1.4 1.1 2 2.4 2 4h8c0-1.6.6-2.9 2-4a10 10 0 0 0-6-18z" fill="#fff" stroke="${stroke}" stroke-width="1.7"/><path d="M20 36.5h8M21 39.5h6M21.5 42.5h5" stroke="${stroke}" stroke-width="1.5" stroke-linecap="round"/><path d="M21.5 30l2.5-8 2.5 8" fill="none" stroke="${lit?fil:'#cfcfc8'}" stroke-width="${lit?2.6:1.5}" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+/* ---------- dados ---------- */
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ini=n=>{const p=n.trim().split(/\s+/);return (p[0][0]+(p.length>1?p[p.length-1][0]:'')).toUpperCase();};
+const short=n=>{const p=n.trim().split(/\s+/);return p.length>1?p[0]+' '+p[p.length-1][0]+'.':p[0];};
+const col=n=>'c'+([...n].reduce((a,c)=>a+c.charCodeAt(0),0)%5);
+let uid=1000;
+
+const SESS=[
+ ['Introdução ao Programa de Mentoria','D'],['Mentoria em Acção','D'],
+ ['Os Nossos Sonhos e a Educação como Caminho','D'],['Os Nossos Sonhos e a Educação como Caminho','C'],
+ ['Igualdade de Género','D'],['Igualdade de Género','C'],['As Nossas Habilidades e Forças','D'],['As Nossas Habilidades e Forças','C'],
+ ['O Nosso Projecto de Vida Escolar','D'],['O Nosso Projecto de Vida Escolar','C'],['As Barreiras ao Nosso Projecto','D'],['As Barreiras ao Nosso Projecto','C'],
+ ['As Nossas Emoções','D'],['As Nossas Emoções','C'],['A Arte de Se Relacionar','D'],['A Arte de Se Relacionar','C'],
+ ['Comunicação Interpessoal e Gestão de Conflitos','D'],['Comunicação Interpessoal e Gestão de Conflitos','C'],
+ ['Cidadania e Direitos','D'],['Cidadania e Direitos','C'],['Jovens Transformadores','D'],['Jovens Transformadores','C'],
+ ['Os Meus Talentos e Vocações no meu Futuro','D'],['Os Meus Talentos e Vocações no meu Futuro','C'],['Liderança Colaborativa','D'],['Liderança Colaborativa','C'],
+ ['Evento Escolar «Somos Luz»','D'],['Hora de Agradecer','D']
+];
+const PRES={4:85,6:90,8:88,10:92,12:96,14:87,16:32};
+const ETAPAS=[
+ {n:1,nome:'Somos Luz!',de:1,ate:2,c:'var(--e1)',s:'var(--e1s)',i:'var(--e1i)',hex:'#fedd16',on:'#1a1a1a'},
+ {n:2,nome:'Iluminamos o Nosso Futuro',de:3,ate:12,c:'var(--e2)',s:'var(--e2s)',i:'var(--e2i)',hex:'#00a651',on:'#1a1a1a'},
+ {n:3,nome:'Iluminamos o Nosso Caminho',de:13,ate:22,c:'var(--e3)',s:'var(--e3s)',i:'var(--e3i)',hex:'#01adee',on:'#1a1a1a'},
+ {n:4,nome:'Iluminamos a Nossa Escola',de:23,ate:28,c:'var(--e4)',s:'var(--e4s)',i:'var(--e4i)',hex:'#91278e',on:'#ffffff'}
+];
+const FIL=['#fedd16','#00a651','#01adee','#91278e','#ffffff'];
+const etapaDe=n=>ETAPAS.find(e=>n>=e.de&&n<=e.ate);
+
+function initial(){
+ const mentores=[
+  ['Amina Sitoe','10ª A','estrela'],['Hélder Macuácua','10ª A','estrela'],['Rosa Cumbe','9ª B','sol'],['Paulo Nhaca','10ª B','sol'],
+  ['Lurdes Mondlane','10ª C','lua'],['Jorge Tivane','9ª A','lua'],['Sónia Bila','9ª B','coral'],['Ivan Chongo','10ª C','coral'],
+  ['Kailane Faria','9ª A','imbat'],['Nelson Matsinhe','9ª C','imbat'],['Neisi Manuel','9ª A','star'],['Ruth Patricio','9ª C','star'],
+  ['Graça Mucavele','10ª C',null],['Josina Jessica','9ª B',null],['Dina Bene','9ª C',null],['Georgina','9ª C',null],['Fatima Pereira','9ª C',null],
+  ['Ruth Patricio','9ª C',null],['Melissa Ernesto','9ª C',null],['Maria Vitória','9ª A',null],['Islayne Isaias','9ª A',null]
+ ].map(([nome,classe,dupla],i)=>({id:'m'+i,nome,classe,dupla,saiu:null}));
+ const md={
+  estrela:[['Belita Mussa','6ª B'],['Tito Cossa','6ª A'],['Nádia Langa','6ª A'],['Joana Sitoe','6ª B'],['Dércio Nhantumbo','6ª A'],['Marlina Chaúque','6ª C'],['Abel Macamo','6ª C'],['Samuel Tembe','6ª B'],['Rute Manhiça','6ª A'],['Amélia Cossa','6ª C']],
+  sol:[['Sara Manhiça','6ª B'],['Zito Mussa','6ª A'],['Fátima Tembe','6ª C'],['Rui Guambe','6ª C'],['Olga Macamo','6ª C'],['Lúcia Cuna','6ª B'],['Bento Macuácua','6ª A'],['Celina Tivane','6ª B'],['Domingos Bila','6ª C'],['Ercília Mussa','6ª A']],
+  lua:[['Délcio Muianga','6ª C'],['Eva Chaúque','6ª B'],['Hugo Zucula','6ª A'],['Luisa Nhantumbo','6ª A'],['Nito Mabote','6ª A'],['Paula Sitoe','6ª A'],['Rafael Bila','6ª C'],['Fernando Chongo','6ª B'],['Graciete Langa','6ª C'],['Horácio Sitoe','6ª B']],
+  coral:[['Alda Macamo','6ª A'],['Bento Mussa','6ª B'],['Cátia Tembe','6ª A'],['Dinis Guambe','6ª C'],['Elsa Macamo','6ª A'],['Filipe Muianga','6ª A'],['Gina Chaúque','6ª B'],['Hilário Zucula','6ª A'],['Isabel Nhantumbo','6ª A'],['Júlio Mabote','6ª A'],['Leonel Bila','6ª B'],['Kátia Sitoe','6ª B']]
+ };
+ const mentorandos=[{id:'a0',nome:'Shelcia Cossa',classe:'6ª A',dupla:null,saiu:null}];
+ let k=1;
+ for(const d in md) md[d].forEach(([nome,classe])=>mentorandos.push({id:'a'+(k++),nome,classe,dupla:d,saiu:null}));
+ mentorandos.push({id:'a'+(k++),nome:'Celeste Guambe',classe:'6ª A',dupla:'sol',saiu:{motivo:'Deixou de vir às sessões para ajudar a família em casa.',quando:'há 11 dias'}});
+ mentorandos.push({id:'a'+(k++),nome:'Arlindo Mabote',classe:'6ª B',dupla:'lua',saiu:{motivo:'Mudou de escola com a família.',quando:'há 25 dias'}});
+ return {
+  tab:'inicio', route:'inicio', params:{}, ptab:'duplas', ctab:'acompanhar', open:{3:true}, sheet:null,
+  mentores, mentorandos,
+  duplas:[{id:'estrela',nome:'Dupla Estrela',pct:92},{id:'sol',nome:'Dupla Sol',pct:82},{id:'lua',nome:'Dupla Lua',pct:76},{id:'coral',nome:'Dupla Coral',pct:73},{id:'imbat',nome:'Dupla Imbatíveis',pct:null},{id:'star',nome:'Dupla Star',pct:null}],
+  sessoes:SESS.map(([titulo,tipo],i)=>{const n=i+1;return {n,titulo,tipo,estado:n<17?'feita':n===17?'agora':'futura',pres:PRES[n]??null,data:null};}),
+  casos:[
+   {id:'k1',nome:'Amina Sitoe',papel:'Mentor',dupla:'estrela',sessao:14,texto:'Requer atenção especial.',estado:'acompanhar',vezes:1},
+   {id:'k2',nome:'Rute Manhiça',papel:'Mentorando',dupla:'estrela',sessao:14,texto:'Tem faltado a várias sessões.',estado:'acompanhar',vezes:1},
+   {id:'k3',nome:'Lúcia Cuna',papel:'Mentorando',dupla:'sol',sessao:10,texto:'Dificuldade em ler as cartas do jogo de literacia.',estado:'acompanhar',vezes:1},
+   {id:'k4',nome:'Dércio Nhantumbo',papel:'Mentorando',dupla:'estrela',sessao:8,texto:'Faltou a duas sessões seguidas; a mãe está doente.',estado:'acompanhar',vezes:1},
+   {id:'k5',nome:'Hélder Macuácua',papel:'Mentor',dupla:'estrela',sessao:8,texto:'Chegou sem preparar a sessão. Precisa de apoio com o manual.',estado:'encaminhado',enc:'Encaminhado à diretora pedagógica.',vezes:1},
+   {id:'k6',nome:'Nito Mabote',papel:'Mentorando',dupla:'lua',sessao:8,texto:'Queixa-se de dores de cabeça frequentes.',estado:'encaminhado',enc:'Encaminhado à enfermeira do centro de saúde, com conhecimento da família.',vezes:1},
+   {id:'k7',nome:'Paula Sitoe',papel:'Mentorando',dupla:'lua',sessao:6,texto:'Não tinha caderno para as sessões.',estado:'resolvido',res:'A escola entregou um caderno.',vezes:1}
+  ],
+  alunos:40, metaM:20, metaA:60,
+  fases:[
+   {nome:'Formar a equipa',t:[['Nomear a Equipa de Coordenação',1],['Apresentar o Programa ao Conselho de Escola',1]]},
+   {nome:'Contar os participantes',conta:true,t:[['Contar as Mentorandos',1],['Calcular o número de Círculos',1],['Calcular o número de Mentores',1],['Definir a classe das Mentores',1]]},
+   {nome:'Recrutar os mentores',t:[['Convidar estudantes da 9ª à 12ª classe para serem Mentores',1],['Formar as Duplas: uma rapariga e um rapaz',1],['Assinar o Compromisso da Dupla',1]]},
+   {nome:'Organizar o ano',t:[['Visitar a turma da 6ª classe e apresentar o Programa',1],['Recolher inscrições de 10 Mentorandos por Círculo (5 raparigas e 5 rapazes)',1],['Identificar o espaço na Escola para as sessões do Círculo',1],['Agendar o dia e a hora dos encontros (de 15 em 15 dias)',1],['Pedir a cada Mentorando um caderno e uma caneta',1],['Preparar a ficha de inscrição e presenças',1]]},
+   {nome:'Brilhar',t:[['Realizar o Evento Escolar «Somos Luz»',0],['Fazer a Hora de Agradecer',0],['Lançar o desafio de fazerem o Jogo no próximo ano',0]]}
+  ].map(f=>({...f,t:f.t.map(([nome,feita])=>({nome,feita:!!feita,data:null}))})),
+  ev:null
+ };
+}
+let S=initial();
+
+/* ---------- derivados ---------- */
+const act=l=>l.filter(x=>!x.saiu);
+const dupla=id=>S.duplas.find(d=>d.id===id);
+const dnome=id=>id?(dupla(id)?.nome||'Sem dupla'):'Sem dupla';
+const mentoresDe=id=>act(S.mentores).filter(m=>m.dupla===id);
+const menDe=id=>act(S.mentorandos).filter(m=>m.dupla===id);
+const ses=n=>S.sessoes.find(s=>s.n===n);
+const agora=()=>S.sessoes.find(s=>s.estado==='agora');
+const feitas=()=>S.sessoes.filter(s=>s.estado==='feita').length;
+const nivel=p=>p>=80?['Boa','p-ok','var(--ok)']:p>=60?['Atenção','p-mid','var(--mid)']:['Baixa','p-bad','var(--bad)'];
+const idade=d=>{if(!d)return null;const b=new Date(d+'T00:00'),n=new Date();let a=n.getFullYear()-b.getFullYear();const m=n.getMonth()-b.getMonth();if(m<0||(m===0&&n.getDate()<b.getDate()))a--;return a;};
+function metaTile(n,meta,label){const pct=meta?Math.round(n/meta*100):0;const ok=n>=meta;const d=n-meta;
+ const bg=ok?'var(--oks)':'var(--bads)', ink=ok?'var(--oki)':'var(--badi)', bar=ok?'var(--ok)':'var(--bad)';
+ return `<div class="tile" style="background:${bg};gap:6px;border:2px solid ${bar}"><span class="row" style="align-items:baseline;gap:6px"><b>${n}</b><span style="font-size:15px;color:${ink};font-weight:600">de ${meta}</span></span><span style="color:var(--ink);font-weight:600">${label}</span><span style="font-size:13px;font-weight:700;color:${ink}">${ok?(d===0?'Meta atingida':'Acima da meta · +'+d):'Abaixo da meta · faltam '+(-d)}</span></div>`;}
+const casosN=e=>S.casos.filter(c=>c.estado===e).length;
+function etapaEstado(e){const l=S.sessoes.filter(s=>s.n>=e.de&&s.n<=e.ate);const f=l.filter(s=>s.estado==='feita').length;return {f,t:l.length,done:f===l.length,now:l.some(s=>s.estado==='agora')};}
+function faseEstado(i){const f=S.fases[i];if(f.t.every(t=>t.feita))return 'done';const first=S.fases.findIndex(x=>!x.t.every(t=>t.feita));return first===i?'now':'off';}
+const tarefasFeitas=()=>S.fases.reduce((a,f)=>a+f.t.filter(t=>t.feita).length,0);
+const tarefasTotal=()=>S.fases.reduce((a,f)=>a+f.t.length,0);
+function tipoTag(t){return t==='D'?`<span class="stype">${I.pair(14)} Sessão das Duplas · só Mentores</span>`:`<span class="stype c">${I.hands(14,'currentColor')} Círculo de Mentorandos</span>`;}
+
+/* ---------- peças comuns ---------- */
+const me=`<button class="me" data-a="toast" data-msg="Carlos Mabunda · Professor Coordenador do Programa de Mentoria Escolar" aria-label="Perfil">CM</button>`;
+function top(title,sub,opts){
+ opts=opts||{};
+ const back=opts.back?`<button class="back" data-a="back" aria-label="Voltar">${I.back()}</button>`:'';
+ return `<header class="top pad"><div class="row" style="gap:6px;min-width:0">${back}<div class="tt">${opts.eyebrowFirst?`<span class="eyebrow">${sub}</span><h1 class="h1">${title}</h1>`:`<h1 class="h1">${title}</h1>${sub?`<span class="sub">${sub}</span>`:''}`}</div></div>${opts.noMe?'':me}</header>`;
+}
+function nav(){
+ const t=[['inicio','Início',I.home],['guia','Guia',I.flag],['participantes','Participantes',I.users],['sessoes','Sessões',I.cal],['recursos','Recursos',I.book]];
+ return `<nav class="nav" aria-label="Menu principal">${t.map(([id,l,ic])=>`<button class="${S.tab===id?'on':''}" data-a="tab" data-id="${id}" ${S.tab===id?'aria-current="page"':''}><span class="ic">${ic(22)}</span>${l}</button>`).join('')}</nav>`;
+}
+/* 5 lâmpadas: a 1ª é entregue no início do Jogo; as seguintes no fim de cada etapa */
+function lampadas(){
+ const ee=ETAPAS.map(etapaEstado);
+ const lit=[true,...ee.map(e=>e.done)];
+ return {lit,n:lit.filter(Boolean).length,ee};
+}
+function percurso(){
+ const {lit,n,ee}=lampadas();
+ return `<section class="card stack-s">
+  <div class="between"><span class="h2" style="font-size:16px">Percurso da escola</span><span style="font-weight:700">${feitas()} de 28 sessões</span></div>
+  <div class="lamps">${lit.map((l,i)=>lamp(l,50,FIL[i])).join('')}</div>
+  <div class="segs">${ee.map((e,i)=>`<div style="flex:${e.t}"><i style="width:${Math.round(e.f/e.t*100)}%;background:${ETAPAS[i].c}"></i></div>`).join('')}</div>
+  <span class="hand">${n} de 5 lâmpadas acesas. Cada etapa concluída acende mais uma!</span>
+ </section>`;
+}
+function sessaoAgora(cta){
+ const s=agora();
+ if(!s) return `<section class="card stack-s" style="text-align:center;align-items:center">${lamp(true,56,'#ffffff')}<h2 class="h2">Fim do Jogo!</h2><span class="hand">A vossa luz brilha forte. As 28 sessões foram feitas.</span></section>`;
+ const e=etapaDe(s.n);
+ return `<section class="now" style="background:${e.s};border-color:${e.c}">
+  <div class="crumb">${I.pennant(e.hex,22)} Etapa ${e.n} » ${esc(e.nome)}</div>
+  <span class="brush" style="background:${e.c};color:${e.on}">${cta==='inicio'?'Próxima sessão':'A decorrer'}</span>
+  <h2>Sessão ${s.n} · ${esc(s.titulo)}</h2>
+  ${tipoTag(s.tipo)}
+  <span class="meta">${I.cal(16)} <button data-a="sheet" data-type="data" data-n="${s.n}">${s.data?esc(s.data):'Data por definir'}</button> · 60 minutos</span>
+  <button class="btn dark" data-a="avaliar" data-n="${s.n}" style="margin-top:2px">${I.check(20,'#fff')} ${cta==='inicio'?'Registar presenças':'Terminar e avaliar'}</button>
+ </section>`;
+}
+
+/* comparação com outras escolas (valores de exemplo para o protótipo) */
+const OUTRAS={4:86,6:84,8:84,10:86,12:85,14:83,16:80,18:81,20:82,22:80,24:79,26:80};
+function comparar(){
+ const circ=S.sessoes.filter(s=>s.tipo==='C'&&s.pres!=null);
+ const nos=circ.length?Math.round(circ.reduce((t,x)=>t+x.pres,0)/circ.length):0;
+ const out=circ.length?Math.round(circ.reduce((t,x)=>t+(OUTRAS[x.n]??80),0)/circ.length):0;
+ const dA=S.mentorandos.filter(m=>m.saiu).length+S.mentores.filter(m=>m.saiu).length, dO=1;
+ const cell=(v,good)=>`<div style="border-radius:12px;padding:10px 6px;text-align:center;background:${good?'var(--oks)':'var(--bads)'};color:${good?'var(--oki)':'var(--badi)'}"><b style="font-size:24px;font-variant-numeric:tabular-nums">${v}</b></div>`;
+ const grey=v=>`<div style="border-radius:12px;padding:10px 6px;text-align:center;background:var(--bg)"><b style="font-size:24px;color:var(--ink2);font-variant-numeric:tabular-nums">${v}</b></div>`;
+ const g='display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:center';
+ return `<section class="card stack-s" style="gap:10px">
+  <span class="brush" style="background:var(--tool);color:#fff">A escola vs. outras escolas</span>
+  <div style="${g}"><span></span><span class="sub" style="text-align:center;font-weight:700;color:var(--ink)">Nossa escola</span><span class="sub" style="text-align:center;font-weight:700">Outras escolas</span></div>
+  <div style="${g}"><span style="font-weight:600">Participação</span>${cell(nos+'%',nos>=out)}${grey(out+'%')}</div>
+  <div style="${g}"><span style="font-weight:600">Desistências</span>${cell(dA,dA<=dO)}${grey(dO)}</div>
+  <span class="sub">Verde = melhor ou igual à média · Vermelho = pior. Outras escolas: valores de exemplo.</span>
+ </section>`;
+}
+
+/* alerta compacto no topo do Início: o que o professor tem de fazer agora */
+function tarefaAgora(){
+ const s=agora(); if(!s) return '';
+ const e=etapaDe(s.n);
+ return `<section style="font-family:var(--fira);background:${e.s};border:2px solid ${e.c};border-radius:16px;padding:10px 12px 10px 14px;display:flex;align-items:center;gap:12px">
+  <div class="grow" style="display:flex;flex-direction:column;gap:2px"><span class="row" style="gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">${I.pennant(e.hex,18)} Por fazer agora</span><span style="font-weight:700;font-size:15px;line-height:1.25">Sessão ${s.n} · ${esc(s.titulo)}</span></div>
+  <button class="btn dark small" style="flex:none;min-height:44px" data-a="avaliar" data-n="${s.n}">${I.check(16,'#fff')} Registar presenças</button>
+ </section>`;
+}
+
+/* ---------- ecrãs ---------- */
+const V={};
+V.inicio=()=>{
+ const circ=S.sessoes.filter(s=>s.tipo==='C'&&s.pres!=null).slice(-5);
+ const avg=circ.length?Math.round(circ.reduce((a,s)=>a+s.pres,0)/circ.length):0;
+ const [lv,lc]=nivel(avg);
+ const last=circ[circ.length-1];
+ const nM=act(S.mentores).length, nA=act(S.mentorandos).length;
+ const dM=S.mentores.filter(m=>m.saiu).length, dA=S.mentorandos.filter(m=>m.saiu).length;
+ const ca=casosN('acompanhar'),ce=casosN('encaminhado'),cr=casosN('resolvido');
+ return top('Olá, Carlos!','EPC de Búzi · Professor Coordenador',{eyebrowFirst:true})+`<main class="stack pad">
+ ${tarefaAgora()}
+ <section class="card stack-s" style="gap:14px">
+  <span class="brush" style="background:var(--capa);color:var(--ink)">${I.users(16)} Assiduidade</span>
+  <span class="sub" style="font-size:14px;margin-top:-6px">Quantas Mentorandos vieram aos Círculos</span>
+  <div class="row" style="align-items:flex-end"><span class="big">${avg}%</span><div class="stack-s" style="gap:6px;padding-bottom:6px"><span class="pill ${lc}" style="align-self:flex-start;font-size:14px">${lv}</span><span class="sub" style="font-size:14px">média dos últimos ${circ.length} Círculos</span></div></div>
+  <div class="bars">${circ.map(x=>`<div class="bar"><span style="color:${x.pres<60?'var(--badi)':'var(--ink)'}">${x.pres}%</span><i style="height:${Math.max(6,Math.round(x.pres*0.62))}px;background:${nivel(x.pres)[2]}"></i></div>`).join('')}</div>
+  <div class="bar-l">${circ.map(x=>`<span style="${x.pres<60?'color:var(--badi);font-weight:700':''}">Sessão ${x.n}</span>`).join('')}</div>
+  ${last&&last.pres<60?`<div class="alert">${I.alert(20)}<span>No Círculo da sessão ${last.n} só vieram ${last.pres}%. Porquê?</span></div>`:''}
+  <hr class="dash">
+  <div class="stack-s"><div class="between"><span style="font-weight:700;font-size:16px">Na nossa escola</span><button class="btn ghost small" style="min-height:36px" data-a="sheet" data-type="metas">Editar metas</button></div>
+   <div class="grid2">${metaTile(nM,S.metaM,'Mentores')}${metaTile(nA,S.metaA,'Mentorandos')}</div></div>
+  <div class="stack-s"><span style="font-weight:700;font-size:16px">Desistências</span>
+   <div class="grid2"><div class="tile"><b>${dM}</b><span>Mentores</span></div><div class="tile"><b>${dA}</b><span>Mentorandos</span></div></div></div>
+  <button class="btn dark" data-a="go" data-r="assiduidade">Ver detalhes ${I.arrow(18)}</button>
+ </section>
+
+ <section class="card stack-s" style="gap:14px">
+  <span class="brush" style="background:var(--tool);color:#fff">${I.mega(16,'#fff')} Atenção especial</span>
+  <span class="sub" style="font-size:14px;margin-top:-6px">${ca+ce+cr} casos no total</span>
+  <div class="grid3">
+   <button class="ctile" data-a="casos" data-t="acompanhar" style="background:var(--bads);border-color:var(--bad);color:var(--badi)"><b>${ca}</b><span>Por resolver</span></button>
+   <button class="ctile" data-a="casos" data-t="encaminhado" style="background:var(--bg);color:var(--ink2)"><b>${ce}</b><span>Encaminhados</span></button>
+   <button class="ctile" data-a="casos" data-t="resolvido" style="background:var(--bg);color:var(--ink2)"><b>${cr}</b><span>${cr===1?'Resolvido':'Resolvidos'}</span></button>
+  </div>
+  <button class="btn dark" data-a="casos" data-t="acompanhar">Ver os casos ${I.arrow(18)}</button>
+ </section>
+
+ ${percurso()}
+ ${comparar()}
+ ${indicadoresCard()}
+ </main>`+nav();
+};
+
+V.assiduidade=()=>{
+ const circ=S.sessoes.filter(s=>s.tipo==='C'&&s.pres!=null);
+ const l5=circ.slice(-5); const avg=l5.length?Math.round(l5.reduce((a,s)=>a+s.pres,0)/l5.length):0;
+ const saidos=[...S.mentores.filter(m=>m.saiu),...S.mentorandos.filter(m=>m.saiu)];
+ return top('Assiduidade',`Média dos últimos 5 Círculos: <b style="color:var(--ink)">${avg}%</b>`,{back:true})+`<main class="stack pad">
+ <div class="note" style="border-color:var(--capa)">${I.mega(22)}<span class="hand">«Sejam assíduos e pontuais. Todos são importantes nesta jornada.» — Dicas de Mentoria</span></div>
+ <section class="card stack-s" aria-label="O que significam as cores"><span style="font-weight:700">O que significam as cores</span>
+  <div class="row"><span class="pill p-ok" style="min-width:68px;justify-content:center">Boa</span><span>80% ou mais vieram</span></div>
+  <div class="row"><span class="pill p-mid" style="min-width:68px;justify-content:center">Atenção</span><span>entre 60% e 79%</span></div>
+  <div class="row"><span class="pill p-bad" style="min-width:68px;justify-content:center">Baixa</span><span>menos de 60%</span></div>
+ </section>
+ <section class="card tight"><h2 class="h2" style="padding:12px 0 4px">Por Círculo (dupla)</h2>
+  ${S.duplas.map(d=>{const n=menDe(d.id).length;if(!n||d.pct==null)return `<div class="item"><span class="nm grow">${esc(d.nome)}</span><span class="sub" style="font-weight:600">Sem Círculo formado</span></div>`;const [l,c,h]=nivel(d.pct);return `<div class="item" style="flex-direction:column;align-items:stretch;gap:8px"><div class="between"><span class="nm">${esc(d.nome)}</span><span class="row" style="gap:8px"><b style="font-size:17px">${d.pct}%</b><span class="pill ${c}">${l}</span></span></div><div class="track"><i style="width:${d.pct}%;background:${h}"></i></div><span class="sub" style="font-size:14px">${n} Mentorandos</span></div>`}).join('')}
+ </section>
+ <section class="card tight"><h2 class="h2" style="padding:12px 0 4px">Por sessão do Círculo</h2>
+  ${circ.slice().reverse().map(s=>{const [l,c]=nivel(s.pres);const e=etapaDe(s.n);return `<div class="item"><span class="num" style="background:${e.c};color:${e.on}">${s.n}</span><span class="grow">${esc(s.titulo)}</span><b>${s.pres}%</b><span class="pill ${c}">${l}</span></div>`}).join('')}
+ </section>
+ <section class="card stack-s"><h2 class="h2">Desistências · ${saidos.length}</h2>
+  ${saidos.length?saidos.map(m=>`<div class="tile" style="gap:3px"><span style="font-weight:700;font-size:16px;color:var(--ink)">${esc(m.nome)}</span><span class="sub">${esc(m.classe)} · ${esc(dnome(m.dupla))} · ${esc(m.saiu.quando)}</span><span style="color:var(--ink);font-size:15px">${esc(m.saiu.motivo)}</span></div>`).join(''):'<span class="sub">Ninguém desistiu.</span>'}
+ </section>
+ </main>`+nav();
+};
+
+V.casos=()=>{
+ const t=S.ctab; const L=S.casos.filter(c=>c.estado===t);
+ const tabs=[['acompanhar','Por resolver'],['encaminhado','Encaminhados'],['resolvido','Resolvidos']];
+ return top('Atenção especial','Todos os casos da EPC de Búzi',{back:true})+`<main class="stack pad">
+ <div class="seg" role="tablist">${tabs.map(([id,l])=>`<button role="tab" class="${t===id?'on':''}" aria-selected="${t===id}" data-a="ctab" data-id="${id}">${l}<b>${casosN(id)}</b></button>`).join('')}</div>
+ <div class="note" style="border-color:var(--tool)">${I.mega(22)}<span class="hand">«O que acontece no Círculo, fica no Círculo» — a não ser que esteja em causa a segurança de alguém.</span></div>
+ ${L.length?L.map(c=>{
+  const box=c.estado==='acompanhar'?'':c.estado==='encaminhado'?`<div class="cbox" style="background:var(--e3s);color:var(--e3i)"><span class="k">${I.send(14)} Encaminhado</span><span>${esc(c.enc)}</span></div>`:`<div class="cbox" style="background:var(--oks);color:var(--oki)"><span class="k">${I.check(14)} Resolvido</span><span>${esc(c.res)}</span></div>`;
+  return `<article class="caso">
+   <div class="row"><span class="av ${col(c.nome)}">${ini(c.nome)}</span><div class="grow"><div style="font-weight:700">${esc(c.nome)}</div><div class="sub">${esc(c.papel)} · ${esc(dnome(c.dupla))}</div></div>${c.vezes>1?`<span class="pill p-bad">${c.vezes} vezes</span>`:''}</div>
+   <div class="cbox" style="background:${c.estado==='acompanhar'?'var(--bads)':'var(--bg)'}"><span class="k" style="color:${c.estado==='acompanhar'?'var(--badi)':'var(--ink2)'}">Sessão ${c.sessao}</span><span>${esc(c.texto)}</span></div>
+   ${box}
+   ${c.estado!=='resolvido'?`<div class="row" style="gap:8px">${c.estado==='acompanhar'?`<button class="btn ghost small" data-a="sheet" data-type="encaminhar" data-id="${c.id}">${I.send(16)} Encaminhar</button>`:''}<button class="btn ghost small" data-a="sheet" data-type="resolver" data-id="${c.id}">${I.check(16)} Resolver</button></div>`:''}
+  </article>`;}).join(''):`<div class="empty">${I.check(30,'var(--ok)')}<span>Não há casos aqui.</span></div>`}
+ </main>`+nav();
+};
+
+V.guia=()=>{
+ const cur=S.fases.findIndex((f,i)=>faseEstado(i)==='now');
+ const ci=cur<0?S.fases.length-1:cur; const F=S.fases[ci];
+ const done=tarefasFeitas(), tot=tarefasTotal();
+ const X=[170,95,240,100,170], Y0=40, DY=170;
+ const H=Y0+DY*(S.fases.length-1)+150;
+ let path=''; X.forEach((x,i)=>{const y=Y0+i*DY+38;path+=(i?' L':'M')+x+' '+y;});
+ return top('Guia da escola','Implementação do Programa de Mentoria Escolar')+`<main class="stack pad">
+ <section class="gcard"><div class="between"><div><div style="font-size:12px;font-weight:700;color:var(--lamp)">Fase ${ci+1} de ${S.fases.length}</div><div style="font-size:22px;font-weight:700">${esc(F.nome)}</div></div>${lamp(true,48,'#fedd16')}</div>
+  <div class="track" style="background:#3a3a38"><i style="width:${Math.round(done/tot*100)}%;background:var(--lamp)"></i></div>
+  <span style="font-size:13px;color:#ddd">${done} de ${tot} tarefas feitas</span></section>
+ <div class="path" style="height:${H}px">
+  <svg aria-hidden="true" width="340" height="${H}" viewBox="0 0 340 ${H}" style="position:absolute;inset:0"><path d="${path}" fill="none" stroke="#1a1a1a" stroke-width="2" stroke-dasharray="9 8"/></svg>
+  ${S.fases.map((f,i)=>{const st=faseEstado(i);const sz=st==='now'?84:66;const y=Y0+i*DY+38-sz/2-(st==='now'?24:0);
+   const fe=f.t.filter(t=>t.feita).length;
+   return `<button class="node" data-a="go" data-r="fase" data-n="${i}" style="left:${X[i]}px;top:${y}px" aria-label="Fase ${i+1}: ${esc(f.nome)}">
+    ${st==='now'?'<span class="now-tag">Fase em curso</span>':''}
+    <span class="circ" style="width:${sz}px;height:${sz}px;${st==='done'?'border:3px solid var(--capa)':st==='now'?'background:var(--e1s);border:3px solid var(--lamp)':'border:2px dashed #b9b9b0'}">${lamp(st!=='off',st==='now'?56:44,'#fedd16')}</span>
+    <span class="fl">Fase ${i+1}</span><span class="fn">${esc(f.nome)}</span>
+    <span class="fs" style="color:${st==='done'?'var(--oki)':st==='now'?'var(--e1i)':'var(--ink3)'}">${st==='done'?'Concluída':st==='now'?`Em curso · ${fe}/${f.t.length}`:'Por começar'}</span></button>`}).join('')}
+ </div>
+ </main>`+nav();
+};
+
+V.fase=()=>{
+ const i=+S.params.n; const f=S.fases[i]; const st=faseEstado(i);
+ const fe=f.t.filter(t=>t.feita).length;
+ const circ=Math.ceil(S.alunos/10);
+ return `<header class="top pad"><div class="row" style="gap:6px"><button class="back" data-a="back" aria-label="Voltar">${I.back()}</button><span class="sub" style="font-size:14px;font-weight:600">Guia · Fase ${i+1} de ${S.fases.length}</span></div></header>
+ <main class="stack pad">
+ <div class="row"><span style="width:62px;height:62px;border-radius:50%;background:#fff;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center">${lamp(st!=='off',48,'#fedd16')}</span><div><h1 class="h1">${esc(f.nome)}</h1><span class="sub" style="font-size:14px">${st==='done'?'Concluída':st==='now'?`Em curso · ${fe} de ${f.t.length}`:'Por começar'}</span></div></div>
+ ${f.conta?`<section class="countbox"><div class="between"><label for="alunos" style="font-weight:700;font-size:14px">Alunos inscritos na 6ª classe</label><input id="alunos" type="number" inputmode="numeric" min="0" value="${S.alunos}" data-bind="alunos"></div>
+  <div class="grid3"><div class="cnt"><b>${circ}</b><span>Círculos</span></div><div class="cnt"><b>${circ*2}</b><span>Mentores</span></div><div class="cnt"><b>${circ}</b><span>Duplas</span></div></div>
+  <span class="hand">Cada Círculo tem 10 Mentorandos: 5 raparigas e 5 rapazes. Cada Dupla é uma rapariga e um rapaz.</span></section>`:''}
+ <span class="brush" style="background:var(--tool);color:#fff">Qual a tarefa? · Já fizeram?</span>
+ <section class="card tight">${f.t.map((t,j)=>`<div class="trow">
+  <button class="chk ${t.feita?'':''}" style="width:auto;min-height:44px;border:0;padding:0;background:none" data-a="tarefa" data-f="${i}" data-t="${j}" ${st==='off'?'disabled':''} aria-pressed="${t.feita}" aria-label="${t.feita?'Feita':'Marcar como feita'}: ${esc(t.nome)}"><span class="bx" style="width:28px;height:28px;border-radius:8px;${t.feita?'background:var(--ok);border-color:var(--ok)':''}">${t.feita?I.check(16,'#fff'):''}</span></button>
+  <div class="grow"><div style="font-weight:600">${esc(t.nome)}</div><div class="sub">${t.feita?(t.data?'Feita a '+esc(t.data):'Feita'):st==='off'?'Termine primeiro a fase anterior.':'Tocar no quadrado quando estiver feita.'}</div></div></div>`).join('')}
+ </section></main>`+nav();
+};
+
+V.participantes=()=>{
+ const t=S.ptab; const semDupla=act(S.mentorandos).filter(m=>!m.dupla).length;
+ const tabs=`<div class="seg" role="tablist" style="background:transparent;padding:0;gap:8px">${[['duplas','Duplas','#eaf4e2','#9bc97a'],['mentores','Mentores','#fff8c4','#e6c84a'],['mentorandos','Mentorandos','#fdeadb','#f0a36b']].map(([id,l,bg,bd])=>`<button role="tab" class="${t===id?'on':''}" style="background:${bg};border:2px solid ${t===id?bd:'transparent'};color:var(--ink);${t===id?'font-weight:700;box-shadow:none':''}" aria-selected="${t===id}" data-a="ptab" data-id="${id}"><span>${l}${id==='mentorandos'&&semDupla?`<span class="badge" aria-label="${semDupla} sem dupla">${semDupla}</span>`:''}</span></button>`).join('')}</div>`;
+ let body='';
+ if(t==='mentores'){
+  const L=act(S.mentores);
+  body=`<button class="dashed" data-a="sheet" data-type="novoMentor">${I.uadd(20)} Adicionar Mentor</button>
+  <div class="between"><h3 style="margin:0;font-size:15px">Mentores</h3><span class="sub">${L.length} activos</span></div>
+  <section class="card tight">${L.map(m=>`<div class="item"><span class="av ${col(m.nome)}">${ini(m.nome)}</span><div class="grow"><div class="nm">${esc(m.nome)}</div><div class="sub" style="${m.dupla?'':'color:var(--badi);font-weight:600'}">${esc(m.classe)}${m.nasc?' · '+idade(m.nasc)+' anos':''} · ${esc(dnome(m.dupla))}</div></div><button class="icon-btn" data-a="sheet" data-type="pessoa" data-k="m" data-id="${m.id}" aria-label="Opções de ${esc(m.nome)}">${I.ucog(20)}</button></div>`).join('')}</section>`;
+ } else if(t==='duplas'){
+  body=`<div class="note" style="border-color:var(--e1)">${I.mega(22)}<span class="hand">Cada Dupla é composta por uma rapariga e um rapaz, com um Círculo de 10 Mentorandos (5 raparigas e 5 rapazes).</span></div>
+  <button class="dashed" data-a="sheet" data-type="dupla">${I.plus()} Criar dupla</button>`+S.duplas.map(d=>{const ms=mentoresDe(d.id);const n=menDe(d.id).length;return `<section class="card stack-s"><div class="between"><span class="h2" style="font-size:16px">${esc(d.nome)}</span><span class="pill ${n===10?'p-ok':n===0?'p-grey':'p-mid'}">${n} no Círculo</span></div>
+   ${ms.length?ms.map(m=>`<div class="between"><span class="row" style="gap:8px">${I.star(14)} ${esc(m.nome)} <span class="sub">${esc(m.classe)}</span></span><span class="sub" style="color:var(--oki);font-weight:700">Activo</span></div>`).join(''):'<span class="sub">Sem Mentoras ou Mentores.</span>'}
+   ${n&&n!==10?`<span class="sub" style="color:var(--midi);font-weight:600">O manual prevê 10 por Círculo.</span>`:''}
+   <button class="btn ghost small" style="align-self:flex-start" data-a="sheet" data-type="dupla" data-id="${d.id}">Alterar Mentores</button></section>`}).join('');
+ } else {
+  const L=act(S.mentorandos).slice().sort((a,b)=>(a.dupla?1:0)-(b.dupla?1:0));
+  const saidos=S.mentorandos.filter(m=>m.saiu);
+  body=`<button class="dashed" data-a="sheet" data-type="novoMentorando">${I.uadd(20)} Inscrever Mentorando</button>
+  <div class="between"><div><h3 style="margin:0;font-size:15px">Mentorandos</h3><span class="sub">${L.length} inscritos · ${semDupla} sem dupla</span></div></div>
+  <section class="card tight">${L.map(m=>`<div class="item"><span class="av ${col(m.nome)}">${ini(m.nome)}</span><div class="grow"><div class="nm">${esc(m.nome)}</div><div class="sub" style="${m.dupla?'':'color:var(--badi);font-weight:700'}">${esc(m.classe)}${m.nasc?' · '+idade(m.nasc)+' anos':''} · ${esc(dnome(m.dupla))}</div></div><button class="icon-btn" data-a="sheet" data-type="pessoa" data-k="a" data-id="${m.id}" aria-label="Opções de ${esc(m.nome)}">${I.ucog(20)}</button></div>`).join('')}</section>
+  <h3 style="margin:6px 0 0;font-size:15px">Desistiram · ${saidos.length}</h3>
+  <section class="card tight">${saidos.map(m=>`<div class="item" style="flex-direction:column;align-items:flex-start;gap:2px"><span class="sub"><b style="color:var(--ink)">${esc(m.nome)}</b> · ${esc(m.classe)} · ${esc(dnome(m.dupla))} · ${esc(m.saiu.quando)}</span><span class="sub">${esc(m.saiu.motivo)}</span></div>`).join('')||'<div class="item sub">Ninguém desistiu.</div>'}</section>`;
+ }
+ return top('Participantes','EPC de Búzi · 2026')+`<main class="stack pad">${tabs}${body}</main>`+nav();
+};
+
+V.sessoes=()=>{
+ return top('Sessões','4 etapas · 28 sessões')+`<main class="stack pad">${sessaoAgora('sessoes')}${percurso()}
+ ${ETAPAS.map(e=>{const st=etapaEstado(e);const open=!!S.open[e.n];const L=S.sessoes.filter(s=>s.n>=e.de&&s.n<=e.ate);
+  return `<section class="etapa" style="border-color:${open?e.c:'var(--line)'}"><button data-a="etapa" data-n="${e.n}" aria-expanded="${open}">${I.pennant(e.hex,28)}<div class="grow"><div class="sub">Etapa ${e.n} · ${st.f}/${st.t} sessões</div><span class="brush" style="background:${e.c};color:${e.on};margin-top:4px;font-size:12px">${esc(e.nome)}</span></div>${st.done?`<span class="pill p-ok">${I.check(12)} Lâmpada</span>`:''}${open?I.up():I.down()}</button>
+  ${open?L.map(s=>`<button class="srow" style="${s.estado==='agora'?`background:${e.s}`:''}" data-a="sessao" data-n="${s.n}"><span class="num" style="${s.estado==='futura'?`border:2px solid ${e.c};color:var(--ink2)`:`background:${e.c};color:${e.on}`}">${s.n}</span><div class="grow"><div style="font-weight:600">${esc(s.titulo)}</div>${s.tipo==='C'?`<span class="stype c">${I.hands(14,'currentColor')} Círculo</span>`:`<span class="stype">${I.pair(14)} Duplas</span>`}</div>${s.estado==='feita'?'<span class="pill p-ok">Concluída</span>':s.estado==='agora'?`<span class="pill" style="background:var(--ink);color:#fff">A decorrer</span>`:''}</button>`).join(''):''}
+  </section>`}).join('')}
+ </main>`+nav();
+};
+
+/* indicadores do programa (dados ilustrativos) */
+const IND={
+ '2026':{comp:90,l:[
+  {id:'prog',nome:'Progressão escolar',ic:'trend',nos:76,nac:72,top:[['Escola A',92],['Escola B',88],['Escola C',83],['Escola D',79]],pos:5},
+  {id:'lit',nome:'Literacia',ic:'book',nos:86,nac:76,top:[['Escola B',94],['Escola A',90],['Escola C',81],['Escola D',77]],pos:3},
+  {id:'voc',nome:'Orientação vocacional e competências socioemocionais',ic:'compass',nos:72,nac:68,top:[['Escola C',89],['Escola A',84],['Escola B',78],['Escola D',67]],pos:4},
+  {id:'cid',nome:'Cidadania activa',ic:'people',nos:45,nac:70,top:[['Escola D',96],['Escola B',92],['Escola A',87],['Escola E',83],['Escola C',78]],pos:103}]},
+ '2025':{comp:100,l:[
+  {id:'prog',nome:'Progressão escolar',ic:'trend',nos:70,nac:71,top:[['Escola A',90],['Escola C',86],['Escola B',84],['Escola D',80],['Escola F',77]],pos:9},
+  {id:'lit',nome:'Literacia',ic:'book',nos:79,nac:74,top:[['Escola B',91],['Escola A',88],['Escola D',80],['Escola C',78]],pos:5},
+  {id:'voc',nome:'Orientação vocacional e competências socioemocionais',ic:'compass',nos:66,nac:65,top:[['Escola C',85],['Escola A',80],['Escola B',75],['Escola D',70],['Escola E',69]],pos:12},
+  {id:'cid',nome:'Cidadania activa',ic:'people',nos:52,nac:68,top:[['Escola D',94],['Escola B',90],['Escola A',85],['Escola E',82],['Escola C',80]],pos:88}]}
+};
+function indTop(it){
+ const rows=it.top.slice();
+ if(it.pos<=5) rows.splice(it.pos-1,0,['Tua escola',it.nos,true]);
+ const L=rows.slice(0,5).map((r,i)=>`<div style="display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:6px;padding:6px 8px;border-radius:8px;${r[2]?'background:var(--oks);font-weight:700;color:var(--oki)':''}"><span style="color:${r[2]?'var(--oki)':'var(--ink3)'}">${i+1}</span><span>${r[0]}</span><span style="font-variant-numeric:tabular-nums">${r[1]}%</span></div>`).join('');
+ const extra=it.pos>5?`<div style="padding:0 8px;color:var(--ink3)">…</div><div style="display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:6px;padding:6px 8px;border-radius:8px;background:var(--bads);font-weight:700;color:var(--badi)"><span>${it.pos}</span><span>Tua escola</span><span>${it.nos}%</span></div>`:'';
+ return `<div style="background:var(--bg);border-radius:12px;padding:8px 6px;display:flex;flex-direction:column;gap:2px;font-size:14px"><span style="font-weight:700;padding:2px 8px 4px">Top 5 escolas</span>${L}${extra}</div>`;
+}
+function indBars(it){
+ const ok=it.nos>=it.nac;
+ return `<div class="stack-s" style="gap:6px">
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:4px 10px;align-items:center"><span class="sub" style="color:var(--ink)">A tua escola</span><span></span><div class="track" style="height:12px"><i style="width:${it.nos}%;background:${ok?'var(--ok)':'var(--bad)'}"></i></div><b style="text-align:right;color:${ok?'var(--oki)':'var(--badi)'}">${it.nos}%</b></div>
+  <div style="display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:4px 10px;align-items:center"><span class="sub" style="color:var(--ink)">Média nacional</span><span></span><div class="track" style="height:12px"><i style="width:${it.nac}%;background:#9a9a92"></i></div><b style="text-align:right;color:var(--ink2)">${it.nac}%</b></div></div>`;
+}
+function indicadoresCard(){
+ const d=IND['2026'];
+ return `<section class="card stack-s" style="gap:12px">
+  <span class="brush" style="background:var(--capa);color:var(--ink)">${I.trend(16)} Indicadores do programa</span>
+  ${d.l.map(it=>{const ok=it.nos>=it.nac;return `<div class="row" style="gap:10px"><span style="width:36px;height:36px;border-radius:50%;background:var(--capa-soft);display:flex;align-items:center;justify-content:center;flex:none">${I[it.ic](18)}</span><span class="grow" style="font-weight:600;font-size:14px;line-height:1.25">${it.nome}</span><span style="text-align:right;flex:none"><b style="font-size:18px;color:${ok?'var(--oki)':'var(--badi)'}">${it.nos}%</b><br><span class="sub">nacional ${it.nac}%</span></span></div>`}).join('')}
+  <button class="btn dark" data-a="go" data-r="indicadores">Ver indicadores em detalhe ${I.arrow(18)}</button>
+ </section>`;
+}
+V.indicadores=()=>{
+ const ano=S.indAno||'2026', f=S.indF||'todos'; const d=IND[ano];
+ const L=d.l.filter(it=>f==='todos'||it.id===f);
+ return top('Indicadores do programa','EPC de Búzi',{back:true})+`<main class="stack pad">
+ <div class="grid2"><div><label class="lb" for="indF">Indicador</label><select id="indF" data-bind="indF"><option value="todos" ${f==='todos'?'selected':''}>Todos os indicadores</option>${d.l.map(it=>`<option value="${it.id}" ${f===it.id?'selected':''}>${it.nome}</option>`).join('')}</select></div>
+ <div><label class="lb" for="indAno">Ano</label><select id="indAno" data-bind="indAno">${Object.keys(IND).map(a=>`<option ${a===ano?'selected':''}>${a}</option>`).join('')}</select></div></div>
+ <section class="card stack-s" style="gap:8px"><div class="between"><span style="font-weight:700">Completude do programa</span><b>${d.comp}%</b></div><div class="track" style="height:12px"><i style="width:${d.comp}%;background:var(--ok)"></i></div></section>
+ ${L.map(it=>`<section class="card stack-s" style="gap:14px">
+  <div class="row" style="gap:12px"><span style="width:48px;height:48px;border-radius:50%;background:var(--capa-soft);display:flex;align-items:center;justify-content:center;flex:none">${I[it.ic](24)}</span><h2 class="h2" style="font-size:17px;line-height:1.25">${it.nome}</h2></div>
+  ${indBars(it)}
+  <span class="pill ${it.nos>=it.nac?'p-ok':'p-bad'}" style="align-self:flex-start;font-size:13px">${it.nos>=it.nac?'Acima':'Abaixo'} da média nacional · ${it.nos>=it.nac?'+':''}${it.nos-it.nac}</span>
+  <span class="sub" style="font-weight:700;text-transform:uppercase;letter-spacing:.4px">Ranking nacional · ${it.pos}º lugar</span>
+  ${indTop(it)}
+ </section>`).join('')}
+ <span class="sub">Dados ilustrativos neste protótipo.</span>
+ </main>`+nav();
+};
+
+V.recursos=()=>{
+ const R=[['Dicas de Mentoria','10 conselhos para serem bons Mentores',13],['Os Super-Quatro','Xiluva, Amade, Mateus e Mahuwa',10],['Exemplos de habilidades','Quadro das Habilidades',22],['Ficha de inscrição e presenças','√ presente · X ausente',25],['A Árvore dos Sonhos','Desenhar o sonho nos frutos',30],['Exemplos de profissões','Por área de trabalho',31],['O Meu Caminho de Educação','Ensino técnico-profissional e superior',33],['Passos de cada Círculo','Boas-vindas, objectivos, actividades, encerrar',37]];
+ return top('Recursos','Do Manual Somos Luz')+`<main class="stack pad">
+ <div class="note" style="border-color:var(--tool)">${I.mega(22)}<span class="hand">Ferramentas do Manual-Jogo para preparar as sessões.</span></div>
+ ${R.map(([t,d,p])=>`<button class="res" data-a="toast" data-msg="${esc(t)} — página ${p} do manual."><span class="brush" style="background:var(--tool);color:#fff;padding:8px 10px">${I.book(18)}</span><div class="grow"><div style="font-weight:700">${esc(t)}</div><div class="sub">${esc(d)}</div></div><span class="sub">pág. ${p}</span></button>`).join('')}
+ </main>`+nav();
+};
+
+const RISCOS=['Falta muitas vezes','Pode deixar a escola','Gravidez ou união prematura','Problema de saúde','Violência ou maus-tratos','Problemas em casa','Dificuldade em ler ou escrever','Triste ou isolado/a','Outra situação'];
+function riscoTag(r){if(!r.risco)return '';return `<span class="pill ${r.risco.urg==='urgente'?'p-bad':'p-mid'}" style="align-self:flex-start;white-space:normal">${I.alert(12,'currentColor')} ${r.risco.urg==='urgente'?'Urgente · ':''}${esc(r.risco.cats.join(', '))}</span>`;}
+V.avaliar=()=>{
+ const s=ses(S.ev.n); const ev=S.ev; const isC=s.tipo==='C'; const e=etapaDe(s.n);
+ const groups=S.duplas.map(d=>({d,ms:mentoresDe(d.id),ks:isC?menDe(d.id):[]})).filter(g=>g.ms.length);
+ const allM=groups.flatMap(g=>g.ms), allK=groups.flatMap(g=>g.ks);
+ const presM=allM.filter(p=>ev.p[p.id].pres).length;
+ const presK=allK.filter(p=>ev.p[p.id].pres).length;
+ const nR=Object.values(ev.p).filter(r=>r.risco).length;
+ const accent=isC?{c:'var(--circ)',s:'var(--circs)'}:{c:e.c,s:e.s};
+ return top('Registar presenças',`Sessão ${s.n} · ${isC?'Círculo de Mentorandos':'Sessão das Duplas'}`,{back:true,noMe:true})+`<main class="stack pad">
+ <div class="crumb">${I.pennant(e.hex,22)} Etapa ${e.n} » ${esc(e.nome)}</div>
+ <div class="note" style="border-color:${accent.c};background:${accent.s}">${I.mega(22)}<span class="hand" style="color:var(--ink)">${isC?'Para cada dupla: primeiro os Mentores, depois tirar o visto a quem faltou do Círculo. Toque no triângulo para reportar uma situação de risco.':'Marcar se cada Mentor veio ou faltou.'}</span></div>
+ ${groups.map(g=>{
+  const kPres=g.ks.filter(p=>ev.p[p.id].pres).length;
+  return `<section class="ecard">
+  <div class="ehead"><h2 class="h2">${esc(g.d.nome)}</h2>${isC?`<span class="pill p-circ">${I.hands(12,'currentColor')} ${kPres}/${g.ks.length} no Círculo</span>`:''}</div>
+  <div class="band" style="background:var(--e1s)"><span class="row" style="gap:6px">${I.star(15)} Mentores da dupla</span><span class="sub" style="color:var(--ink)">${g.ms.filter(p=>ev.p[p.id].pres).length}/${g.ms.length} vieram</span></div>
+  ${g.ms.map(p=>{const r=ev.p[p.id];return `<div class="mrow"><div class="row"><span class="av ${col(p.nome)}">${ini(p.nome)}</span><div class="grow"><div style="font-weight:700">${esc(p.nome)}</div><div class="sub">${esc(p.classe)}</div></div></div>
+   <div class="pt"><button class="opt pres ${r.pres?'on':''}" data-a="presM" data-id="${p.id}" data-v="1" aria-pressed="${r.pres}">${I.check(16)} Veio</button><button class="opt falt ${!r.pres?'on':''}" data-a="presM" data-id="${p.id}" data-v="0" aria-pressed="${!r.pres}">${I.xx(16)} Faltou</button></div>
+   ${riscoTag(r)}
+   <button class="btn ghost small" style="align-self:stretch;justify-content:flex-start;min-height:42px;font-weight:600;color:${r.risco?'var(--badi)':'var(--ink2)'}" data-a="sheet" data-type="risco" data-id="${p.id}">${I.alert(15,r.risco?'var(--bad)':'var(--ink3)')} ${r.risco?'Ver situação de risco':'Situação de risco a reportar (se houver)'}</button>
+  </div>`}).join('')}
+  ${isC?`<div class="band" style="background:var(--circs);color:var(--circi)"><span class="row" style="gap:6px">${I.hands(15,'currentColor')} Mentorandos · ${g.ks.length}</span><button class="btn small" style="min-height:34px;background:#fff;color:var(--circi);border:1.5px solid var(--circ)" data-a="todos" data-d="${g.d.id}">Todos vieram</button></div>
+   <div class="sub" style="padding:8px 16px 4px">√ presente · X faltou — tocar no nome para mudar.</div>
+   ${g.ks.map(p=>{const r=ev.p[p.id];return `<div class="kid ${r.pres?'':'off'}" style="${r.risco?'background:var(--bads)':''}"><button class="tick" data-a="presK" data-id="${p.id}" aria-pressed="${r.pres}" aria-label="${esc(p.nome)}: ${r.pres?'presente':'faltou'}"><span class="bx">${r.pres?I.check(18,'#fff'):I.xx(16,'var(--bad)')}</span><span class="grow" style="display:flex;flex-direction:column;gap:3px;padding:6px 0"><span><span class="kn">${esc(p.nome)}</span> <span class="sub">${esc(p.classe)}${r.pres?'':' · faltou'}</span></span>${riscoTag(r)}</span></button><button class="flag ${r.risco?'on':''}" data-a="sheet" data-type="risco" data-id="${p.id}" aria-label="${r.risco?'Ver':'Reportar'} situação de risco de ${esc(p.nome)}">${I.alert(18,r.risco?'var(--bad)':'var(--ink3)')}</button></div>`}).join('')}`:''}
+  </section>`}).join('')}
+ </main>
+ <div class="foot pad"><div class="sub" style="font-weight:700;color:var(--ink);display:flex;flex-wrap:wrap;gap:4px 12px"><span>Mentores ${presM}/${allM.length}</span>${isC?`<span>Círculo ${presK}/${allK.length}</span>`:''}<span style="color:${nR?'var(--badi)':'var(--ink2)'}">${nR} situaç${nR===1?'ão':'ões'} de risco</span></div>
+ <button class="btn dark" data-a="guardar">${I.check(20,'#fff')} Guardar presenças</button></div>`;
+};
+
+/* ---------- folhas ---------- */
+function sheetHTML(){
+ const sh=S.sheet; const head=(t,sub)=>`<div class="between"><div><h2 class="h2">${t}</h2>${sub?`<span class="sub">${sub}</span>`:''}</div><button class="icon-btn" data-a="close" aria-label="Fechar">${I.x()}</button></div>`;
+ if(sh.type==='encaminhar'){const c=S.casos.find(x=>x.id===sh.id);
+  return head('Encaminhar caso',esc(c.nome)+' · Sessão '+c.sessao)+`<fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">Para quem?</legend>
+  ${[['à diretora pedagógica','Diretora pedagógica'],['à enfermeira do centro de saúde','Enfermeira do centro de saúde'],['à família','Família'],['à equipa de coordenação','Equipa de coordenação']].map(([v,l],i)=>`<label class="radio"><input type="radio" name="para" value="${v}" ${i===0?'checked':''}>${l}</label>`).join('')}</fieldset>
+  <div><label class="lb" for="nota">Nota (opcional)</label><textarea id="nota" placeholder="Ex.: com conhecimento da família"></textarea></div>
+  <button class="btn dark" data-a="doEnc" data-id="${c.id}">${I.send(18)} Encaminhar</button>`;}
+ if(sh.type==='resolver'){const c=S.casos.find(x=>x.id===sh.id);
+  return head('Resolver caso',esc(c.nome))+`<div><label class="lb" for="nota">Como foi resolvido?</label><textarea id="nota" placeholder="Ex.: conversámos com a família e voltou às sessões."></textarea></div><button class="btn dark" data-a="doRes" data-id="${c.id}">${I.check(18,'#fff')} Marcar como resolvido</button>`;}
+ if(sh.type==='risco'){const p=S.mentores.find(x=>x.id===sh.id)||S.mentorandos.find(x=>x.id===sh.id);const r=S.ev.p[sh.id].risco||{cats:[],urg:'normal',nota:''};
+  return head('Situação de risco',esc(p.nome)+' · '+esc(dnome(p.dupla)))+`<div class="note" style="border-color:var(--tool)">${I.mega(20)}<span class="hand">Só a equipa de coordenação vê esta informação. Se alguém estiver em perigo, fale hoje com a direcção da escola.</span></div>
+  <fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">O que está a acontecer? (pode escolher mais de uma)</legend><div style="display:flex;flex-wrap:wrap;gap:8px">${RISCOS.map((c,i)=>`<label class="cs"><input type="checkbox" name="rc" value="${esc(c)}" ${r.cats.includes(c)?'checked':''}>${esc(c)}</label>`).join('')}</div></fieldset>
+  <fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">Quão urgente é?</legend>
+   <label class="radio"><input type="radio" name="ru" value="normal" ${r.urg!=='urgente'?'checked':''}>Pode esperar pela coordenação</label>
+   <label class="radio" style="border-color:var(--bad)"><input type="radio" name="ru" value="urgente" ${r.urg==='urgente'?'checked':''}><b style="color:var(--badi)">Urgente — avisar hoje</b></label></fieldset>
+  <div><label class="lb" for="rn">Conte em poucas palavras <span class="sub">(opcional)</span></label><textarea id="rn" placeholder="Ex.: disse que vai deixar de vir porque tem de cuidar dos irmãos.">${esc(r.nota)}</textarea></div>
+  <button class="btn dark" data-a="doRisco" data-id="${sh.id}">${I.alert(18,'#fff')} Reportar</button>
+  ${S.ev.p[sh.id].risco?`<button class="btn ghost" data-a="delRisco" data-id="${sh.id}">Retirar o reporte</button>`:''}`;}
+ if(sh.type==='metas'){return head('Metas da escola','Quantos queremos ter este ano')+`<div class="grid2"><div><label class="lb" for="mM">Meta de Mentores</label><input id="mM" type="number" inputmode="numeric" min="1" value="${S.metaM}"></div><div><label class="lb" for="mA">Meta de Mentorandos</label><input id="mA" type="number" inputmode="numeric" min="1" value="${S.metaA}"></div></div><span class="sub">Hoje: ${act(S.mentores).length} Mentores e ${act(S.mentorandos).length} Mentorandos. Verde = meta atingida ou acima · Vermelho = abaixo da meta.</span><button class="btn dark" data-a="doMetas">Guardar metas</button>`;}
+ if(sh.type==='data'){const s=ses(sh.n);
+  return head('Data da sessão','Sessão '+s.n)+`<div><label class="lb" for="dt">Quando vai ser?</label><input id="dt" type="date"></div><span class="hand">Os Círculos são de 15 em 15 dias, sempre no mesmo dia, hora e lugar.</span><button class="btn dark" data-a="doData" data-n="${s.n}">Guardar data</button>`;}
+ if(sh.type==='sessao'){const s=ses(sh.n);const e=etapaDe(s.n);
+  const passos=s.tipo==='C'?['Dar as boas-vindas','Explicar os objectivos','Realizar as actividades','Encerrar a sessão']:['Os objectivos desta sessão','A vossa missão','Partilhem com a vossa Dupla','O vosso desafio desta semana'];
+  return head('Sessão '+s.n,esc(s.titulo))+`<div class="crumb">${I.pennant(e.hex,20)} Etapa ${e.n} » ${esc(e.nome)}</div>${tipoTag(s.tipo)}
+  <div class="row" style="flex-wrap:wrap;gap:8px">${s.estado==='feita'?'<span class="pill p-ok">Concluída</span>':s.estado==='agora'?'<span class="pill" style="background:var(--ink);color:#fff">A decorrer</span>':'<span class="pill p-grey">Por fazer</span>'}<span class="pill p-grey">60 minutos</span></div>
+  ${s.pres!=null?`<div class="tile"><b>${s.pres}%</b><span>das Mentorandos vieram</span></div>`:''}
+  <span class="brush" style="background:${s.tipo==='C'?'var(--circ)':e.c};color:${s.tipo==='C'?'#1a1a1a':e.on}">${s.tipo==='C'?'Passos de cada Círculo':'Em cada sessão'}</span>
+  <ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px">${passos.map(p=>`<li>${p}</li>`).join('')}</ol>
+  ${s.estado==='futura'?'<span class="sub">Esta sessão ainda não começou.</span>':''}`;}
+ if(sh.type==='novoMentor'||sh.type==='novoMentorando'){const isM=sh.type==='novoMentor';
+  const cls=isM?['9ª A','9ª B','9ª C','10ª A','10ª B','10ª C','11ª A','12ª A']:['6ª A','6ª B','6ª C'];
+  return head(isM?'Adicionar mentor':'Inscrever Mentorando')+`<div><label class="lb" for="nome">Nome completo</label><input id="nome" type="text" autocomplete="off" placeholder="Ex.: ${isM?'Marta Cossa':'João Mabote'}"></div>
+  <div class="grid2"><div><label class="lb" for="classe">Turma</label><select id="classe">${cls.map(c=>`<option>${c}</option>`).join('')}</select></div><div><label class="lb" for="sexo">F ou M</label><select id="sexo"><option>F</option><option>M</option></select></div></div>
+  <div><label class="lb" for="nasc">Data de nascimento</label><input id="nasc" type="date" data-bind="nasc" max="${new Date().toISOString().slice(0,10)}"><span id="idadeTxt" class="sub" style="display:block;margin-top:6px;font-weight:600;color:var(--ink)"></span></div>
+  <div><label class="lb" for="dup">Dupla</label><select id="dup"><option value="">Sem dupla</option>${S.duplas.map(d=>`<option value="${d.id}">${esc(d.nome)}</option>`).join('')}</select></div>
+  <hr class="dash">
+  <span style="font-weight:700">Encarregado de educação</span>
+  <div><label class="lb" for="encNome">Nome do encarregado</label><input id="encNome" type="text" autocomplete="off" placeholder="Ex.: Ana Mabote"></div>
+  <div><label class="lb" for="encTel">Contacto <span class="sub">(opcional)</span></label><input id="encTel" type="text" inputmode="tel" autocomplete="off" placeholder="Ex.: 84 123 4567"></div>
+  <hr class="dash">
+  <fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">Está em situação de deslocamento?</legend>
+   <div class="grid2"><label class="radio"><input type="radio" name="desl" value="nao" data-bind="desl" checked>Não</label><label class="radio"><input type="radio" name="desl" value="sim" data-bind="desl">Sim</label></div>
+   <div id="deslDe" hidden style="display:flex;flex-direction:column;gap:8px"><span class="lb" style="margin:0">Qual a situação?</span>
+   <label class="radio"><input type="radio" name="deslTipo" value="Comunidade de acolhimento" checked>Comunidade de acolhimento</label><label class="radio"><input type="radio" name="deslTipo" value="Deslocado/a forçado/a">Deslocado/a forçado/a</label>
+   <label class="lb" for="deslOnde" style="margin:4px 0 0">De onde é deslocado/a?</label><input id="deslOnde" type="text" autocomplete="off" placeholder="Ex.: Macomia, Cabo Delgado"></div></fieldset>
+  <hr class="dash">
+  <div><label class="lb" for="saude">Tem algum problema de saúde? <span class="sub">(opcional)</span></label><textarea id="saude" placeholder="Ex.: asma, usa óculos… Deixar em branco se não tiver."></textarea></div>
+  <button class="btn dark" data-a="doNovo" data-k="${isM?'m':'a'}">${I.plus()} ${isM?'Adicionar':'Inscrever'}</button>`;}
+ if(sh.type==='pessoa'){const L=sh.k==='m'?S.mentores:S.mentorandos;const p=L.find(x=>x.id===sh.id);
+  if(sh.step==='sair') return head('Registar desistência',esc(p.nome))+`<div><label class="lb" for="nota">Porque deixou o programa?</label><textarea id="nota" placeholder="Ex.: mudou de escola"></textarea></div><button class="btn dark" data-a="doSair" data-k="${sh.k}" data-id="${p.id}">Confirmar desistência</button><button class="btn ghost" data-a="sheet" data-type="pessoa" data-k="${sh.k}" data-id="${p.id}">Cancelar</button>`;
+  return head(esc(p.nome),esc(p.classe)+(p.nasc?' · '+idade(p.nasc)+' anos':'')+' · '+esc(dnome(p.dupla)))+`${p.enc||p.nasc?`<div class="tile" style="gap:6px;color:var(--ink)">${p.nasc?`<span class="sub">Nascimento: <b style="color:var(--ink)">${esc(p.nasc.split('-').reverse().join('/'))}</b> (${idade(p.nasc)} anos)</span>`:''}${p.enc?`<span class="sub">Encarregado: <b style="color:var(--ink)">${esc(p.enc.nome)}</b>${p.enc.tel?' · '+esc(p.enc.tel):''}</span>`:''}${p.desl?`<span class="sub">Deslocamento: <b style="color:var(--ink)">${esc(p.desl.tipo)} · de ${esc(p.desl.de)}</b></span>`:''}${p.saude?`<span class="sub">Saúde: <b style="color:var(--ink)">${esc(p.saude)}</b></span>`:''}</div>`:''}<div><label class="lb" for="dup">Dupla</label><select id="dup"><option value="">Sem dupla</option>${S.duplas.map(d=>`<option value="${d.id}" ${p.dupla===d.id?'selected':''}>${esc(d.nome)}</option>`).join('')}</select></div>
+  <button class="btn dark" data-a="doDupla" data-k="${sh.k}" data-id="${p.id}">Guardar</button>
+  <button class="btn ghost" style="color:var(--badi)" data-a="sairStep" data-k="${sh.k}" data-id="${p.id}">Registar desistência</button>`;}
+ if(sh.type==='dupla'){const d=sh.id?dupla(sh.id):null;
+  const pool=act(S.mentores).filter(m=>!m.dupla||(d&&m.dupla===d.id));
+  return head(d?'Alterar Mentores':'Criar dupla',d?esc(d.nome):'Uma rapariga e um rapaz, sem dupla')+`${d?'':`<div><label class="lb" for="nome">Nome da dupla</label><input id="nome" type="text" placeholder="Ex.: Dupla Girassol"></div>`}
+  <fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">Escolher 2</legend>${pool.map(m=>`<label class="radio"><input type="checkbox" name="mm" value="${m.id}" ${d&&m.dupla===d.id?'checked':''}>${esc(m.nome)} <span class="sub">${esc(m.classe)}</span></label>`).join('')||'<span class="sub">Não há Mentores sem dupla.</span>'}</fieldset>
+  <button class="btn dark" data-a="doDuplaSave" data-id="${d?d.id:''}">Guardar</button>`;}
+ return '';
+}
+
+/* ---------- render ---------- */
+const app=document.getElementById('app'), sheetEl=document.getElementById('sheet'), toastEl=document.getElementById('toast');
+function render(toTop){
+ const keep=window.scrollY;
+ app.innerHTML=V[S.route]();
+ if(S.sheet){sheetEl.innerHTML=`<div class="sheet-wrap" data-a="closeBg"><div class="sheet" role="dialog" aria-modal="true">${sheetHTML()}</div></div>`;sheetEl.hidden=false;}
+ else {sheetEl.innerHTML='';sheetEl.hidden=true;}
+ window.scrollTo(0,toTop?0:keep);
+}
+let tt;
+function toast(m){toastEl.textContent=m;toastEl.hidden=false;clearTimeout(tt);tt=setTimeout(()=>toastEl.hidden=true,2600);}
+const hist=[];
+function go(r,params){hist.push({route:S.route,params:S.params});S.route=r;S.params=params||{};S.sheet=null;render(true);}
+
+const A={
+ tab:d=>{S.tab=d.id;S.route=d.id;S.params={};hist.length=0;S.sheet=null;render(true);},
+ go:d=>go(d.r,{n:d.n}),
+ back:()=>{const h=hist.pop();if(h){S.route=h.route;S.params=h.params;}else{S.route=S.tab;}S.sheet=null;render(true);},
+ casos:d=>{S.ctab=d.t;go('casos');},
+ ctab:d=>{S.ctab=d.id;render();},
+ ptab:d=>{S.ptab=d.id;render();},
+ etapa:d=>{S.open[d.n]=!S.open[d.n];render();},
+ toast:d=>toast(d.msg),
+ sheet:d=>{S.sheet={type:d.type,id:d.id,n:d.n?+d.n:null,k:d.k};render();},
+ close:()=>{S.sheet=null;render();},
+ closeBg:()=>{S.sheet=null;render();},
+ sessao:d=>{const s=ses(+d.n);S.sheet={type:'sessao',n:s.n};render();},
+ avaliar:d=>{const s=ses(+d.n);const p={};
+  act(S.mentores).filter(m=>m.dupla).forEach(x=>p[x.id]={pres:true,resp:null,at:false,nota:''});
+  if(s.tipo==='C') act(S.mentorandos).filter(m=>m.dupla&&mentoresDe(m.dupla).length).forEach(x=>p[x.id]={pres:true,at:false,nota:''});
+  S.ev={n:s.n,p};go('avaliar');},
+ presM:d=>{const r=S.ev.p[d.id];r.pres=d.v==='1';if(!r.pres){r.resp=null;}render();},
+ presK:d=>{const r=S.ev.p[d.id];r.pres=!r.pres;render();},
+ todos:d=>{menDe(d.d).forEach(m=>{if(S.ev.p[m.id])S.ev.p[m.id].pres=true;});render();},
+ resp:d=>{const r=S.ev.p[d.id];r.resp=r.resp===d.v?null:d.v;render();},
+ doRisco:d=>{const cats=[...document.querySelectorAll('input[name=rc]:checked')].map(x=>x.value);if(!cats.length){toast('Escolha pelo menos uma situação.');return;}
+  const urg=(document.querySelector('input[name=ru]:checked')||{}).value||'normal';const nota=document.getElementById('rn').value.trim();
+  const r=S.ev.p[d.id];r.risco={cats,urg,nota};r.at=true;r.nota=(urg==='urgente'?'URGENTE · ':'')+cats.join(', ')+(nota?' — '+nota:'');S.sheet=null;render();toast('Situação de risco registada');},
+ delRisco:d=>{const r=S.ev.p[d.id];r.risco=null;r.at=false;r.nota='';S.sheet=null;render();toast('Reporte retirado');},
+ guardar:()=>{
+  const s=ses(S.ev.n);const ids=Object.keys(S.ev.p);
+  const find=i=>S.mentores.find(x=>x.id===i)||S.mentorandos.find(x=>x.id===i);
+  const kids=ids.filter(i=>i[0]==='a');
+  let msg;
+  if(s.tipo==='C'&&kids.length){const pres=kids.filter(i=>S.ev.p[i].pres).length;s.pres=Math.round(pres/kids.length*100);msg=`${pres} de ${kids.length} no Círculo`;
+   S.duplas.forEach(d=>{const m=kids.filter(i=>find(i).dupla===d.id);if(!m.length)return;const pct=Math.round(m.filter(i=>S.ev.p[i].pres).length/m.length*100);d.pct=d.pct==null?pct:Math.round((d.pct*8+pct)/9);});}
+  else {const ms=ids.filter(i=>i[0]==='m');msg=`${ms.filter(i=>S.ev.p[i].pres).length} de ${ms.length} Mentores`;}
+  let novos=0;
+  ids.forEach(i=>{const r=S.ev.p[i];if(!r.at)return;const p=find(i);const ex=S.casos.find(c=>c.nome===p.nome&&c.estado!=='resolvido');
+   if(ex){ex.vezes++;ex.sessao=s.n;ex.texto=r.nota||ex.texto;}else S.casos.unshift({id:'k'+(uid++),nome:p.nome,papel:i[0]==='m'?'Mentor':'Mentorando',dupla:p.dupla,sessao:s.n,texto:r.nota||'Requer atenção especial.',estado:'acompanhar',vezes:1});novos++;});
+  s.estado='feita';const nx=ses(s.n+1);if(nx)nx.estado='agora';
+  const e=nx&&etapaDe(nx.n);if(e)S.open[e.n]=true;
+  const etapaFeita=ETAPAS.find(x=>x.ate===s.n);
+  S.ev=null;S.tab='sessoes';S.route='sessoes';hist.length=0;render(true);
+  toast(etapaFeita?`Parabéns!! Etapa ${etapaFeita.n} concluída — mais uma lâmpada acesa!`:`Sessão ${s.n} guardada · ${msg}${novos?` · ${novos} caso(s) novo(s)`:''}`);
+ },
+ doEnc:d=>{const c=S.casos.find(x=>x.id===d.id);const para=(document.querySelector('input[name=para]:checked')||{}).value||'à diretora pedagógica';const n=document.getElementById('nota').value.trim();
+  c.estado='encaminhado';c.enc='Encaminhado '+para+(n?', '+n:'')+'.';S.sheet=null;render();toast('Caso encaminhado');},
+ doRes:d=>{const c=S.casos.find(x=>x.id===d.id);const n=document.getElementById('nota').value.trim();c.estado='resolvido';c.res=n||'Resolvido.';S.sheet=null;render();toast('Caso resolvido');},
+ doMetas:()=>{const a=parseInt(document.getElementById('mM').value,10),b=parseInt(document.getElementById('mA').value,10);if(!(a>0&&b>0)){toast('Escreva metas maiores que zero.');return;}S.metaM=a;S.metaA=b;S.sheet=null;render();toast('Metas guardadas');},
+ doData:d=>{const v=document.getElementById('dt').value;if(!v){toast('Escolha uma data.');return;}const [y,m,dd]=v.split('-');ses(+d.n).data=`${dd}/${m}/${y}`;S.sheet=null;render();toast('Data guardada');},
+ doNovo:d=>{const g=id=>document.getElementById(id).value.trim();const nome=g('nome');if(!nome){toast('Escreva o nome.');return;}
+  const nasc=g('nasc');if(!nasc){toast('Indique a data de nascimento.');return;}
+  const encNome=g('encNome');if(!encNome){toast('Escreva o nome do encarregado de educação.');return;}
+  if((document.querySelector('input[name=desl]:checked')||{}).value==='sim'&&!g('deslOnde')){toast('Indique de onde veio a pessoa deslocada.');return;}
+  const o={id:(d.k==='m'?'m':'a')+(uid++),nome,classe:g('classe'),sexo:g('sexo'),nasc,enc:{nome:encNome,tel:g('encTel')},saude:g('saude'),desl:(document.querySelector('input[name=desl]:checked')||{}).value==='sim'?{tipo:(document.querySelector('input[name=deslTipo]:checked')||{}).value,de:g('deslOnde')}:null,dupla:g('dup')||null,saiu:null};
+  (d.k==='m'?S.mentores:S.mentorandos).unshift(o);S.sheet=null;render();toast(nome+' adicionado(a)');},
+ doDupla:d=>{const p=(d.k==='m'?S.mentores:S.mentorandos).find(x=>x.id===d.id);p.dupla=document.getElementById('dup').value||null;S.sheet=null;render();toast('Guardado');},
+ sairStep:d=>{S.sheet={type:'pessoa',k:d.k,id:d.id,step:'sair'};render();},
+ doSair:d=>{const p=(d.k==='m'?S.mentores:S.mentorandos).find(x=>x.id===d.id);const n=document.getElementById('nota').value.trim();p.saiu={motivo:n||'Motivo não indicado.',quando:'hoje'};if(d.k==='m')p.dupla=null;S.sheet=null;render();toast('Desistência registada');},
+ doDuplaSave:d=>{const sel=[...document.querySelectorAll('input[name=mm]:checked')].map(x=>x.value);if(sel.length!==2){toast('Escolha exactamente 2.');return;}
+  let id=d.id;if(!id){const nome=document.getElementById('nome').value.trim();if(!nome){toast('Escreva o nome da dupla.');return;}id='d'+(uid++);S.duplas.push({id,nome:/^dupla/i.test(nome)?nome:'Dupla '+nome,pct:null});}
+  S.mentores.forEach(m=>{if(m.dupla===id)m.dupla=null;});sel.forEach(i=>S.mentores.find(m=>m.id===i).dupla=id);S.sheet=null;render();toast('Dupla guardada');},
+ tarefa:d=>{const t=S.fases[+d.f].t[+d.t];t.feita=!t.feita;t.data=t.feita?new Date().toLocaleDateString('pt-PT'):null;render();if(t.feita)toast('Tarefa feita!');}
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;if(el.dataset.a==='closeBg'&&e.target!==el)return;const fn=A[el.dataset.a];if(!fn)return;fn(el.dataset,el,e);});
+document.addEventListener('input',e=>{const b=e.target.dataset.bind;if(!b)return;
+ if(b==='desl'){const d=document.getElementById('deslDe');if(d)d.hidden=e.target.value!=='sim';return;}
+ if(b==='indF'){S.indF=e.target.value;render();return;}
+ if(b==='indAno'){S.indAno=e.target.value;render();return;}
+ if(b==='nota'){S.ev.p[e.target.dataset.id].nota=e.target.value;}
+ if(b==='nasc'){const t=document.getElementById('idadeTxt');const a=idade(e.target.value);if(t)t.textContent=(a!=null&&a>=0)?a+' anos':'';}
+ if(b==='alunos'){S.alunos=Math.max(0,parseInt(e.target.value||'0',10));render();const i=document.getElementById('alunos');if(i)i.focus();}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.sheet){S.sheet=null;render();}});
+render(true);
+})();
+</script>
+</body>
+</html>
