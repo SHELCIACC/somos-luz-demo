@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#9bc97a">
 <meta name="description" content="Demo da app Somos Luz com as alterações propostas.">
-<title>Somos Luz — Protótipo</title>
+<title>Somos Luz</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/icons/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Somos Luz">
+<meta name="application-name" content="Somos Luz">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -185,6 +194,43 @@ label.lb{font-size:14px;font-weight:600;display:block;margin-bottom:6px}
 .radio input{width:20px;height:20px;accent-color:var(--ink)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:600;z-index:60;max-width:calc(100% - 32px);text-align:center}
 .empty{text-align:center;padding:32px 16px;color:var(--ink2);display:flex;flex-direction:column;align-items:center;gap:10px}
+/* ---- adaptação a telemóveis e tablets ---- */
+/* telemóveis pequenos (≤ 360 px) */
+@media (max-width:360px){
+ .h1{font-size:22px}
+ .big{font-size:44px}
+ .ctile b{font-size:28px}
+ .ctile span{font-size:12px}
+ .opt{font-size:13px}
+ .tile b{font-size:26px}
+ .nav button{font-size:11px}
+ .nav .ic{padding:4px 10px}
+}
+/* tablets (≥ 600 px): coluna mais larga, cabeçalho e menu a toda a largura */
+@media (min-width:600px){
+ body{background:var(--bg);font-size:16px}
+ .app{max-width:760px}
+ .pad{padding-left:max(28px, env(safe-area-inset-left,0px));padding-right:max(28px, env(safe-area-inset-right,0px))}
+ .top{box-shadow:0 0 0 100vmax var(--capa);clip-path:inset(0 -100vmax)}
+ .nav{box-shadow:0 0 0 100vmax #fff;clip-path:inset(0 -100vmax)}
+ .foot{box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax)}
+ body::before{background:var(--capa)}
+ main.stack{gap:18px;padding-block:20px 32px}
+ .h1{font-size:30px}
+ .h2{font-size:20px}
+ .big{font-size:64px}
+ .bars{height:120px}
+ .card{padding:20px}
+ .nav button{font-size:13px;min-height:58px}
+ .tarefa-btn{flex:0 0 auto!important}
+ .now .btn{align-self:flex-start;width:auto;padding:0 28px}
+ .sheet-wrap{align-items:center;padding:24px}
+ .sheet{max-width:600px;border-radius:22px;max-height:86vh}
+}
+/* tablets na horizontal (≥ 1000 px) */
+@media (min-width:1000px){
+ .app{max-width:880px}
+}
 @media (prefers-reduced-motion: no-preference){.sheet{animation:up .18s ease-out}@keyframes up{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}}
 </style>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}</style>
@@ -393,9 +439,9 @@ function comparar(){
 function tarefaAgora(){
  const s=agora(); if(!s) return '';
  const e=etapaDe(s.n);
- return `<section style="font-family:var(--fira);background:${e.s};border:2px solid ${e.c};border-radius:16px;padding:10px 12px 10px 14px;display:flex;align-items:center;gap:12px">
-  <div class="grow" style="display:flex;flex-direction:column;gap:2px"><span class="row" style="gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">${I.pennant(e.hex,18)} Por fazer agora</span><span style="font-weight:700;font-size:15px;line-height:1.25">Sessão ${s.n} · ${esc(s.titulo)}</span></div>
-  <button class="btn dark small" style="flex:none;min-height:44px" data-a="avaliar" data-n="${s.n}">${I.check(16,'#fff')} Registar presenças</button>
+ return `<section style="font-family:var(--fira);background:${e.s};border:2px solid ${e.c};border-radius:16px;padding:10px 12px 10px 14px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px">
+  <div class="grow" style="display:flex;flex-direction:column;gap:2px;min-width:190px"><span class="row" style="gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px">${I.pennant(e.hex,18)} Por fazer agora</span><span style="font-weight:700;font-size:15px;line-height:1.25">Sessão ${s.n} · ${esc(s.titulo)}</span></div>
+  <button class="btn dark small tarefa-btn" style="flex:1 0 auto;max-width:100%;min-height:44px" data-a="avaliar" data-n="${s.n}">${I.check(16,'#fff')} Registar presenças</button>
  </section>`;
 }
 
