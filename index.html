@@ -88,7 +88,7 @@ main.stack{display:flex;flex-direction:column;gap:14px;padding-block:16px 28px;f
 .seg button b{font-size:16px;color:var(--ink)}
 .seg .on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--bad);color:#fff;font-size:11px;font-weight:800;padding:0 5px;margin-left:4px}
-.nav{position:sticky;bottom:0;background:#fff;border-top:1.5px solid var(--line);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:8px max(4px, env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(4px, env(safe-area-inset-right,0px));z-index:6}
+.nav{position:sticky;bottom:0;background:#fff;border-top:1.5px solid var(--line);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));padding:8px max(4px, env(safe-area-inset-left,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(4px, env(safe-area-inset-right,0px));z-index:6}
 .nav button{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;font-size:12px;color:var(--ink2);padding:0;min-height:52px;font-weight:500}
 .nav .ic{padding:4px 16px;border-radius:999px;display:flex}
 .nav .on{color:var(--ink);font-weight:700}
@@ -206,6 +206,19 @@ label.lb{font-size:14px;font-weight:600;display:block;margin-bottom:6px}
 .etn{font-family:var(--fira);font-size:12px;font-weight:700;line-height:1.15;min-height:2.3em;display:flex;align-items:center}
 .ets{font-size:11px;font-weight:700}
 @media (min-width:600px){.eti{height:68px;width:88px}.etn{font-size:13px}.ets{font-size:12px}}
+.nav .ns{display:none}
+@media (max-width:430px){.nav button{font-size:11px}.nav .ic{padding:4px 10px}.nav .nl{display:none}.nav .ns{display:inline}}
+.gnum{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none}
+.gtabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.gtabs button{background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:600;font-size:13px;line-height:1.2;text-align:center;min-height:96px}
+.gtabs button.on{border-color:var(--ink);background:var(--capa-soft);font-weight:700}
+.sinal{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;font-weight:500}
+.gbox{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.gstep{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
+.p-aberto{background:#f6d5cc;color:#7a2416}.p-acomp{background:#f6e3a1;color:#5c4400}.p-resolv{background:var(--oks);color:var(--oki)}
+.p-crit{background:#7a1f12;color:#fff}.p-urg{background:#c0392b;color:#fff}
+.grow-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line2);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left}
+.grow-row:last-child{border-bottom:0}
 /* ---- adaptação a telemóveis e tablets ---- */
 /* telemóveis pequenos (≤ 360 px) */
 @media (max-width:360px){
@@ -277,6 +290,7 @@ const I={
  heart:(s,c)=>sv('<path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.6 5.2 5.2 0 0 1 21.3 12C19 16.6 12 21 12 21z"/>',s||22,c),
  mega:(s,c)=>sv('<path d="M3 10v4l11 5V5z"/><path d="M14 9a3 3 0 0 1 0 6"/><path d="M6 14.5 7.5 20h2.5l-1-4.4"/><path d="M18 5l2-2M19 9h3M18 13l2 2"/>',s||22,c),
  x:s=>sv('<path d="M6 6l12 12M18 6 6 18"/>',s||22),
+ shield:(s,c)=>sv('<path d="M12 3 4 6v6c0 4.5 3.4 8.2 8 9 4.6-.8 8-4.5 8-9V6z"/><path d="M12 8v5M12 16h.01"/>',s||22,c),
  trend:(s,c)=>sv('<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',s||22,c),
  compass:(s,c)=>sv('<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',s||22,c),
  people:(s,c)=>sv('<circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="7" r="2.5"/><circle cx="12" cy="13" r="2.5"/><path d="M3 20c0-2.5 1.8-4 4-4M21 20c0-2.5-1.8-4-4-4M8 21c0-2.5 1.8-4 4-4s4 1.5 4 4"/>',s||22,c),
@@ -346,13 +360,15 @@ function initial(){
   duplas:[{id:'estrela',nome:'Dupla Estrela',pct:92},{id:'sol',nome:'Dupla Sol',pct:82},{id:'lua',nome:'Dupla Lua',pct:76},{id:'coral',nome:'Dupla Coral',pct:73},{id:'imbat',nome:'Dupla Imbatíveis',pct:null},{id:'star',nome:'Dupla Star',pct:null}],
   sessoes:SESS.map(([titulo,tipo],i)=>{const n=i+1;return {n,titulo,tipo,estado:n<17?'feita':n===17?'agora':'futura',pres:PRES[n]??null,data:null};}),
   casos:[
-   {id:'k1',nome:'Amina Sitoe',papel:'Mentor',dupla:'estrela',sessao:14,texto:'Requer atenção especial.',estado:'acompanhar',vezes:1},
-   {id:'k2',nome:'Rute Manhiça',papel:'Mentorando',dupla:'estrela',sessao:14,texto:'Tem faltado a várias sessões.',estado:'acompanhar',vezes:1},
-   {id:'k3',nome:'Lúcia Cuna',papel:'Mentorando',dupla:'sol',sessao:10,texto:'Dificuldade em ler as cartas do jogo de literacia.',estado:'acompanhar',vezes:1},
-   {id:'k4',nome:'Dércio Nhantumbo',papel:'Mentorando',dupla:'estrela',sessao:8,texto:'Faltou a duas sessões seguidas; a mãe está doente.',estado:'acompanhar',vezes:1},
-   {id:'k5',nome:'Hélder Macuácua',papel:'Mentor',dupla:'estrela',sessao:8,texto:'Chegou sem preparar a sessão. Precisa de apoio com o manual.',estado:'encaminhado',enc:'Encaminhado à diretora pedagógica.',vezes:1},
-   {id:'k6',nome:'Nito Mabote',papel:'Mentorando',dupla:'lua',sessao:8,texto:'Queixa-se de dores de cabeça frequentes.',estado:'encaminhado',enc:'Encaminhado à enfermeira do centro de saúde, com conhecimento da família.',vezes:1},
-   {id:'k7',nome:'Paula Sitoe',papel:'Mentorando',dupla:'lua',sessao:6,texto:'Não tinha caderno para as sessões.',estado:'resolvido',res:'A escola entregou um caderno.',vezes:1}
+   {id:'k1',nome:'Amina Sitoe',papel:'Mentor',dupla:'estrela',sessao:14,texto:'Mudança repentina de comportamento nas últimas sessões.',estado:'acompanhar',vezes:1,tipos:['Violência Psicológica'],prio:'Normal'},
+   {id:'k2',nome:'Rute Manhiça',papel:'Mentorando',dupla:'estrela',sessao:14,texto:'Tem faltado a várias sessões.',estado:'acompanhar',vezes:1,tipos:['Desistência Escolar'],prio:'Urgente'},
+   {id:'k3',nome:'Lúcia Cuna',papel:'Mentorando',dupla:'sol',sessao:10,texto:'Dificuldade em ler as cartas do jogo de literacia.',estado:'acompanhar',vezes:1,tipos:['Outro: baixa literacia'],prio:'Normal'},
+   {id:'k4',nome:'Dércio Nhantumbo',papel:'Mentorando',dupla:'estrela',sessao:8,texto:'Faltou a duas sessões seguidas; a mãe está doente.',estado:'acompanhar',vezes:1,tipos:['Desistência Escolar'],prio:'Normal'},
+   {id:'k8',nome:'Celina Tivane',papel:'Mentorando',dupla:'sol',sessao:12,texto:'Contou que a família quer casá-la no fim do ano.',estado:'encaminhado',enc:'Encaminhado ao Professor de Género, com conhecimento da direcção.',vezes:1,tipos:['União Prematura'],prio:'Crítico'},
+   {id:'k9',nome:'Gina Chaúque',papel:'Mentorando',dupla:'coral',sessao:14,texto:'Colegas da turma gozam com ela todos os dias.',estado:'acompanhar',vezes:1,tipos:['Bullying'],prio:'Normal'},
+   {id:'k5',nome:'Hélder Macuácua',papel:'Mentor',dupla:'estrela',sessao:8,texto:'Chegou sem preparar a sessão. Precisa de apoio com o manual.',estado:'encaminhado',enc:'Encaminhado à diretora pedagógica.',vezes:1,tipos:['Desistência do Programa'],prio:'Normal'},
+   {id:'k6',nome:'Nito Mabote',papel:'Mentorando',dupla:'lua',sessao:8,texto:'Marcas no braço; diz que caiu várias vezes.',estado:'encaminhado',enc:'Encaminhado à enfermeira do centro de saúde, com conhecimento da família.',vezes:1,tipos:['Violência Física'],prio:'Urgente'},
+   {id:'k7',nome:'Paula Sitoe',papel:'Mentorando',dupla:'lua',sessao:6,texto:'Não tinha caderno para as sessões.',estado:'resolvido',res:'A escola entregou um caderno.',vezes:1,tipos:['Outro: falta de material'],prio:'Normal'}
   ],
   alunos:40, metaM:20, metaA:60,
   fases:[
@@ -396,8 +412,8 @@ function top(title,sub,opts){
  return `<header class="top pad"><div class="row" style="gap:6px;min-width:0">${back}<div class="tt">${opts.eyebrowFirst?`<span class="eyebrow">${sub}</span><h1 class="h1">${title}</h1>`:`<h1 class="h1">${title}</h1>${sub?`<span class="sub">${sub}</span>`:''}`}</div></div>${opts.noMe?'':me}</header>`;
 }
 function nav(){
- const t=[['inicio','Início',I.home],['guia','Guia',I.flag],['participantes','Participantes',I.users],['sessoes','Sessões',I.cal],['recursos','Recursos',I.book]];
- return `<nav class="nav" aria-label="Menu principal">${t.map(([id,l,ic])=>`<button class="${S.tab===id?'on':''}" data-a="tab" data-id="${id}" ${S.tab===id?'aria-current="page"':''}><span class="ic">${ic(22)}</span>${l}</button>`).join('')}</nav>`;
+ const t=[['inicio','Início',I.home],['guia','Guia',I.flag],['participantes','Participantes',I.users,'Pessoas'],['sessoes','Sessões',I.cal],['gestao','Casos',I.shield],['recursos','Recursos',I.book]];
+ return `<nav class="nav" aria-label="Menu principal">${t.map(([id,l,ic,sh])=>`<button class="${S.tab===id?'on':''}" data-a="tab" data-id="${id}" ${S.tab===id?'aria-current="page"':''} aria-label="${l}"><span class="ic">${ic(22)}</span>${sh?`<span class="nl">${l}</span><span class="ns">${sh}</span>`:l}</button>`).join('')}</nav>`;
 }
 /* 5 lâmpadas: a 1ª é entregue no início do Jogo; as seguintes no fim de cada etapa */
 function lampadas(){
@@ -536,6 +552,7 @@ V.casos=()=>{
   const box=c.estado==='acompanhar'?'':c.estado==='encaminhado'?`<div class="cbox" style="background:var(--e3s);color:var(--e3i)"><span class="k">${I.send(14)} Encaminhado</span><span>${esc(c.enc)}</span></div>`:`<div class="cbox" style="background:var(--oks);color:var(--oki)"><span class="k">${I.check(14)} Resolvido</span><span>${esc(c.res)}</span></div>`;
   return `<article class="caso">
    <div class="row"><span class="av ${col(c.nome)}">${ini(c.nome)}</span><div class="grow"><div style="font-weight:700">${esc(c.nome)}</div><div class="sub">${esc(c.papel)} · ${esc(dnome(c.dupla))}</div></div>${c.vezes>1?`<span class="pill p-bad">${c.vezes} vezes</span>`:''}</div>
+   <div class="row" style="gap:8px;flex-wrap:wrap">${prioPill(c.prio||'Normal')}<span style="font-weight:600;font-size:14px">${esc((c.tipos||[]).join(', '))}</span></div>
    <div class="cbox" style="background:${c.estado==='acompanhar'?'var(--bads)':'var(--bg)'}"><span class="k" style="color:${c.estado==='acompanhar'?'var(--badi)':'var(--ink2)'}">Sessão ${c.sessao}</span><span>${esc(c.texto)}</span></div>
    ${box}
    ${c.estado!=='resolvido'?`<div class="row" style="gap:8px">${c.estado==='acompanhar'?`<button class="btn ghost small" data-a="sheet" data-type="encaminhar" data-id="${c.id}">${I.send(16)} Encaminhar</button>`:''}<button class="btn ghost small" data-a="sheet" data-type="resolver" data-id="${c.id}">${I.check(16)} Resolver</button></div>`:''}
@@ -672,6 +689,65 @@ V.indicadores=()=>{
  </main>`+nav();
 };
 
+/* ---------- gestão de casos ---------- */
+const ESTADO_L={acompanhar:['Aberto','p-aberto'],encaminhado:['Em acompanhamento','p-acomp'],resolvido:['Resolvido','p-resolv']};
+const PRIO_ORD={'Crítico':0,'Urgente':1,'Normal':2};
+function prioPill(p){return p==='Crítico'?'<span class="pill p-crit">Crítico</span>':p==='Urgente'?'<span class="pill p-urg">Urgente</span>':'<span class="sub" style="font-weight:600">Normal</span>';}
+V.gestao=()=>{
+ const t=S.gtab||'dados';
+ const tabs=[['sinais','1','Sinais de alerta'],['registar','2','Registar caso'],['dados','3','Dados dos casos']];
+ let body='';
+ if(t==='sinais'){
+  body=`<p style="margin:0">Durante as sessões podemos notar em Mentores e Mentorandos comportamentos ou gestos que podem indicar a violação dos seus direitos, dentro ou fora das sessões.</p>
+  <b style="font-size:15px">Principais sinais de alerta a ter em atenção:</b>
+  ${RISCOS.map((r,i)=>`<div class="sinal"><span class="gnum">${i+1}</span><span>${r}</span></div>`).join('')}
+  <div class="note" style="border-color:var(--e1);background:var(--e1s)">${I.mega(20)}<span class="hand" style="color:var(--ink)"><b>Nota:</b> são apenas possíveis sinais de alerta. O caso só é encaminhado depois de confirmado. Pode haver outros sinais que merecem atenção, segundo o julgamento de quem observa.</span></div>
+  <button class="btn dark" data-a="gtab" data-id="registar">${I.plus()} Registar um caso</button>`;
+ } else if(t==='registar'){
+  const pessoas=[...act(S.mentores).map(m=>({...m,f:'Mentor'})),...act(S.mentorandos).map(m=>({...m,f:'Mentorando'}))];
+  body=`<div class="gstep"><span class="gnum">1</span>Tipo de caso</div>
+  <div class="gbox"><span class="sub">Pode escolher mais de um.</span><div style="display:flex;flex-wrap:wrap;gap:8px">${TIPOS.map(c=>`<label class="cs"><input type="checkbox" name="gt" value="${esc(c)}">${esc(c)}</label>`).join('')}</div>
+   <div><label class="lb" for="gOutro">Outro (escreva qual)</label><input id="gOutro" type="text" autocomplete="off" placeholder="Ex.: trabalho infantil"></div></div>
+  <div class="gstep"><span class="gnum">2</span>Dados do Mentor ou Mentorando</div>
+  <div class="gbox"><div><label class="lb" for="gPessoa">Nome completo</label><select id="gPessoa"><option value="">Escolher da lista…</option><optgroup label="Mentores">${pessoas.filter(x=>x.f==='Mentor').map(x=>`<option value="${x.id}">${esc(x.nome)} · ${esc(x.classe)}</option>`).join('')}</optgroup><optgroup label="Mentorandos">${pessoas.filter(x=>x.f==='Mentorando').map(x=>`<option value="${x.id}">${esc(x.nome)} · ${esc(x.classe)}</option>`).join('')}</optgroup></select></div>
+   <div class="grid2"><div><label class="lb" for="gIdade">Idade</label><input id="gIdade" type="number" inputmode="numeric" min="5" max="30" placeholder="Ex.: 12"></div><div><label class="lb" for="gTurno">Turno</label><select id="gTurno"><option>Manhã</option><option>Tarde</option></select></div></div>
+   <span class="sub">Escola: EPC de Búzi. A função (Mentor ou Mentorando) e a turma vêm da lista.</span></div>
+  <div class="gstep"><span class="gnum">3</span>Já reportou a alguém alguma vez?</div>
+  <div class="gbox"><div class="grid2"><label class="radio"><input type="radio" name="gRep" value="sim">Sim</label><label class="radio"><input type="radio" name="gRep" value="nao" checked>Não</label></div>
+   <div><label class="lb" for="gRepTxt">Se sim, a quem e o que foi feito</label><textarea id="gRepTxt" placeholder="Ex.: contou à directora de turma, que falou com a família."></textarea></div></div>
+  <div class="gstep"><span class="gnum">4</span>Já encaminhou ao Professor de Género?</div>
+  <div class="gbox"><label class="radio"><input type="checkbox" id="gGen">Sim, vou reportar dentro de 24 horas</label></div>
+  <div class="gstep"><span class="gnum">5</span>Prioridade</div>
+  <div class="gbox"><label class="radio"><input type="radio" name="gPrio" value="Normal" checked>Normal</label><label class="radio" style="border-color:#c0392b"><input type="radio" name="gPrio" value="Urgente"><b style="color:#a3161b">Urgente</b></label><label class="radio" style="border-color:#7a1f12"><input type="radio" name="gPrio" value="Crítico"><b style="color:#7a1f12">Crítico — risco para a segurança</b></label>
+   <div><label class="lb" for="gNota">O que aconteceu? <span class="sub">(opcional)</span></label><textarea id="gNota" placeholder="Descreva em poucas palavras."></textarea></div></div>
+  <div class="note" style="border-color:var(--tool)">${I.mega(20)}<span class="hand">Só a equipa de coordenação vê esta informação.</span></div>
+  <button class="btn dark" data-a="doCaso">${I.check(18,'#fff')} Registar caso</button>`;
+ } else {
+  const L=S.casos.slice();
+  const univ=act(S.mentores).length+act(S.mentorandos).length;
+  const pessoasCasos=new Set(L.map(c=>c.nome)).size;
+  const abertos=L.filter(c=>c.estado!=='resolvido').length, resolv=L.length-abertos;
+  const crit=L.filter(c=>c.prio==='Crítico'&&c.estado!=='resolvido').length, urg=L.filter(c=>c.prio==='Urgente'&&c.estado!=='resolvido').length;
+  const pct=(a,b)=>b?Math.round(a/b*100):0;
+  L.sort((a,b)=>(a.estado==='resolvido')-(b.estado==='resolvido')||PRIO_ORD[a.prio||'Normal']-PRIO_ORD[b.prio||'Normal']);
+  body=`<div class="grid2">
+   <div class="tile" style="background:#fff;border:1.5px solid var(--line)"><span style="font-weight:700;color:var(--ink);font-size:14px">Casos reportados</span><b style="font-size:34px">${L.length}</b><span style="font-size:13px">${pessoasCasos} de ${univ} Mentores e Mentorandos: <b style="color:var(--ink)">${pct(pessoasCasos,univ)}%</b></span></div>
+   <div class="tile" style="background:#fff;border:2px solid #c0392b"><span style="font-weight:700;color:#a3161b;font-size:14px">Críticos e urgentes</span><b style="font-size:34px;color:#a3161b">${crit+urg}</b><span style="font-size:13px">${crit} críticos · ${urg} urgentes (por resolver)</span></div></div>
+  <div class="tile" style="background:#fff;border:1.5px solid var(--line);gap:6px"><span style="font-weight:700;color:var(--ink);font-size:14px">Estado dos casos</span>
+   <div class="row" style="gap:18px"><span><b style="font-size:26px">${abertos}</b> <span style="color:var(--ink);font-weight:600">abertos</span> · ${pct(abertos,L.length)}%</span><span><b style="font-size:26px">${resolv}</b> <span style="color:var(--ink);font-weight:600">resolvidos</span> · ${pct(resolv,L.length)}%</span></div>
+   <div style="display:flex;height:10px;border-radius:999px;overflow:hidden;gap:3px">${abertos?`<div style="flex:${abertos};background:#e3a33a"></div>`:''}${resolv?`<div style="flex:${resolv};background:var(--ok)"></div>`:''}</div></div>
+  <div class="between"><h2 class="h2">Detalhes dos casos</h2><span class="sub">${L.length} casos</span></div>
+  <section class="card tight">${L.map(c=>{const [el,ec]=ESTADO_L[c.estado];return `<button class="grow-row" data-a="casos" data-t="${c.estado}">
+   <span style="min-width:0"><b>${esc(short(c.nome))}</b> <span class="sub">· ${esc(c.papel)}</span><br><span style="font-size:14px">${esc((c.tipos||['—']).join(', '))}</span></span>
+   <span style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${prioPill(c.prio||'Normal')}<span class="pill ${ec}">${el}</span></span></button>`}).join('')}</section>
+  <button class="btn dark" data-a="casos" data-t="acompanhar">Encaminhar ou resolver casos ${I.arrow(18)}</button>`;
+ }
+ return top('Gestão de casos','Violações dos direitos de Mentores e Mentorandos')+`<main class="stack pad">
+ <div class="gtabs" role="tablist">${tabs.map(([id,n,l])=>`<button role="tab" class="${t===id?'on':''}" aria-selected="${t===id}" data-a="gtab" data-id="${id}"><span class="gnum">${n}</span>${l}</button>`).join('')}</div>
+ ${body}
+ </main>`+nav();
+};
+
 V.recursos=()=>{
  const R=[['Dicas de Mentoria','10 conselhos para serem bons Mentores',13],['Os Super-Quatro','Xiluva, Amade, Mateus e Mahuwa',10],['Exemplos de habilidades','Quadro das Habilidades',22],['Ficha de inscrição e presenças','√ presente · X ausente',25],['A Árvore dos Sonhos','Desenhar o sonho nos frutos',30],['Exemplos de profissões','Por área de trabalho',31],['O Meu Caminho de Educação','Ensino técnico-profissional e superior',33],['Passos de cada Círculo','Boas-vindas, objectivos, actividades, encerrar',37]];
  return top('Recursos','Do Manual Somos Luz')+`<main class="stack pad">
@@ -680,7 +756,8 @@ V.recursos=()=>{
  </main>`+nav();
 };
 
-const RISCOS=['Falta muitas vezes','Pode deixar a escola','Gravidez ou união prematura','Problema de saúde','Violência ou maus-tratos','Problemas em casa','Dificuldade em ler ou escrever','Triste ou isolado/a','Outra situação'];
+const RISCOS=['Faltas excessivas sem justificação','Mudança repentina de comportamento/humor','Marcas de ferimentos no corpo/acidentes de repetição','Comportamentos sexuais destoantes com a idade','Morte de provedor (risco de abandono escolar)','Queda no rendimento escolar','Baixa literacia','Isolamento','Outros sinais'];
+const TIPOS=['Desistência Escolar','Desistência do Programa','União Prematura','Gravidez Precoce','Violência Sexual (na rua, em casa, na escola)','Violência Física','Violência Psicológica','Bullying'];
 function riscoTag(r){if(!r.risco)return '';return `<span class="pill ${r.risco.urg==='urgente'?'p-bad':'p-mid'}" style="align-self:flex-start;white-space:normal">${I.alert(12,'currentColor')} ${r.risco.urg==='urgente'?'Urgente · ':''}${esc(r.risco.cats.join(', '))}</span>`;}
 V.avaliar=()=>{
  const s=ses(S.ev.n); const ev=S.ev; const isC=s.tipo==='C'; const e=etapaDe(s.n);
@@ -724,7 +801,7 @@ function sheetHTML(){
   return head('Resolver caso',esc(c.nome))+`<div><label class="lb" for="nota">Como foi resolvido?</label><textarea id="nota" placeholder="Ex.: conversámos com a família e voltou às sessões."></textarea></div><button class="btn dark" data-a="doRes" data-id="${c.id}">${I.check(18,'#fff')} Marcar como resolvido</button>`;}
  if(sh.type==='risco'){const p=S.mentores.find(x=>x.id===sh.id)||S.mentorandos.find(x=>x.id===sh.id);const r=S.ev.p[sh.id].risco||{cats:[],urg:'normal',nota:''};
   return head('Situação de risco',esc(p.nome)+' · '+esc(dnome(p.dupla)))+`<div class="note" style="border-color:var(--tool)">${I.mega(20)}<span class="hand">Só a equipa de coordenação vê esta informação. Se alguém estiver em perigo, fale hoje com a direcção da escola.</span></div>
-  <fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">O que está a acontecer? (pode escolher mais de uma)</legend><div style="display:flex;flex-wrap:wrap;gap:8px">${RISCOS.map((c,i)=>`<label class="cs"><input type="checkbox" name="rc" value="${esc(c)}" ${r.cats.includes(c)?'checked':''}>${esc(c)}</label>`).join('')}</div></fieldset>
+  <fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">Que sinais de alerta notou? (pode escolher mais de um)</legend><div style="display:flex;flex-wrap:wrap;gap:8px">${RISCOS.map((c,i)=>`<label class="cs"><input type="checkbox" name="rc" value="${esc(c)}" ${r.cats.includes(c)?'checked':''}>${esc(c)}</label>`).join('')}</div></fieldset>
   <fieldset style="border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px"><legend class="lb">Quão urgente é?</legend>
    <label class="radio"><input type="radio" name="ru" value="normal" ${r.urg!=='urgente'?'checked':''}>Pode esperar pela coordenação</label>
    <label class="radio" style="border-color:var(--bad)"><input type="radio" name="ru" value="urgente" ${r.urg==='urgente'?'checked':''}><b style="color:var(--badi)">Urgente — avisar hoje</b></label></fieldset>
@@ -812,6 +889,16 @@ const A={
  doRisco:d=>{const cats=[...document.querySelectorAll('input[name=rc]:checked')].map(x=>x.value);if(!cats.length){toast('Escolha pelo menos uma situação.');return;}
   const urg=(document.querySelector('input[name=ru]:checked')||{}).value||'normal';const nota=document.getElementById('rn').value.trim();
   const r=S.ev.p[d.id];r.risco={cats,urg,nota};r.at=true;r.nota=(urg==='urgente'?'URGENTE · ':'')+cats.join(', ')+(nota?' — '+nota:'');S.sheet=null;render();toast('Situação de risco registada');},
+ gtab:d=>{S.gtab=d.id;render(true);},
+ doCaso:()=>{const tipos=[...document.querySelectorAll('input[name=gt]:checked')].map(x=>x.value);const outro=document.getElementById('gOutro').value.trim();if(outro)tipos.push('Outro: '+outro);
+  if(!tipos.length){toast('Escolha o tipo de caso.');return;}
+  const pid=document.getElementById('gPessoa').value;if(!pid){toast('Escolha a pessoa da lista.');return;}
+  const p=S.mentores.find(x=>x.id===pid)||S.mentorandos.find(x=>x.id===pid);
+  const rep=(document.querySelector('input[name=gRep]:checked')||{}).value==='sim';const repTxt=document.getElementById('gRepTxt').value.trim();
+  const gen=document.getElementById('gGen').checked;const prio=(document.querySelector('input[name=gPrio]:checked')||{}).value||'Normal';const nota=document.getElementById('gNota').value.trim();
+  const n=agora()?agora().n:28;
+  S.casos.unshift({id:'k'+(uid++),nome:p.nome,papel:pid[0]==='m'?'Mentor':'Mentorando',dupla:p.dupla,sessao:n,texto:(nota||'Caso registado na Gestão de casos.')+(rep&&repTxt?' Já reportado: '+repTxt+'.':''),estado:gen?'encaminhado':'acompanhar',enc:gen?'Professor de Género será informado dentro de 24 horas.':undefined,vezes:1,tipos,prio,idade:document.getElementById('gIdade').value,turno:document.getElementById('gTurno').value});
+  S.gtab='dados';render(true);toast('Caso registado'+(prio!=='Normal'?' · '+prio:''));},
  delRisco:d=>{const r=S.ev.p[d.id];r.risco=null;r.at=false;r.nota='';S.sheet=null;render();toast('Reporte retirado');},
  guardar:()=>{
   const s=ses(S.ev.n);const ids=Object.keys(S.ev.p);
@@ -823,7 +910,7 @@ const A={
   else {const ms=ids.filter(i=>i[0]==='m');msg=`${ms.filter(i=>S.ev.p[i].pres).length} de ${ms.length} Mentores`;}
   let novos=0;
   ids.forEach(i=>{const r=S.ev.p[i];if(!r.at)return;const p=find(i);const ex=S.casos.find(c=>c.nome===p.nome&&c.estado!=='resolvido');
-   if(ex){ex.vezes++;ex.sessao=s.n;ex.texto=r.nota||ex.texto;}else S.casos.unshift({id:'k'+(uid++),nome:p.nome,papel:i[0]==='m'?'Mentor':'Mentorando',dupla:p.dupla,sessao:s.n,texto:r.nota||'Requer atenção especial.',estado:'acompanhar',vezes:1});novos++;});
+   if(ex){ex.vezes++;ex.sessao=s.n;ex.texto=r.nota||ex.texto;}else S.casos.unshift({id:'k'+(uid++),nome:p.nome,papel:i[0]==='m'?'Mentor':'Mentorando',dupla:p.dupla,sessao:s.n,texto:r.nota||'Requer atenção especial.',estado:'acompanhar',vezes:1,tipos:['Sinal de alerta (por confirmar)'],prio:r.risco&&r.risco.urg==='urgente'?'Urgente':'Normal'});novos++;});
   s.estado='feita';const nx=ses(s.n+1);if(nx)nx.estado='agora';
   const e=nx&&etapaDe(nx.n);if(e)S.open[e.n]=true;
   const etapaFeita=ETAPAS.find(x=>x.ate===s.n);
