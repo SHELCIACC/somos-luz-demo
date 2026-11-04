@@ -107,3 +107,14 @@ Este pacote contém a demo clicável da app **Somos Luz** (acompanhamento das se
 - Mudar também «Atenção especial» para «Situações de risco» no ecrã dos casos e na caixa do Início (por confirmar).
 - Usar a média de todas as sessões também na caixa de Assiduidade do Início (hoje: últimos 5 Círculos).
 - Mostrar «De onde é deslocado/a?» só para «Deslocado/a forçado/a» (hoje aparece nas duas opções).
+
+## Alterações posteriores (Vercel via GitHub)
+
+- Publicação: repositório `SHELCIACC/somos-luz-demo` (ramo `main`) → o Vercel publica sozinho a cada push.
+- Ícone da app (lâmpada do manual sobre o verde), `manifest.webmanifest`, nome «Somos Luz» no ecrã principal.
+- Layout adaptado a telemóveis pequenos (≤360 px) e tablets (≥600 px); sem ajustes para computador.
+- Sessões: Super-Quatro (desenhos do manual) por cima da sessão em curso.
+- «Percurso das sessões» só em Sessões (saiu do Início): sem lâmpadas, 4 símbolos das etapas (lâmpada, árvore, grupo, escola) — na cor da etapa quando concluída, preto em curso, cinzento por começar.
+- Nova aba **Casos** (Gestão de casos), com base no documento «Gestão de Casos»: 1 Sinais de alerta (9 sinais + nota), 2 Registar caso (tipos de caso, pessoa da lista, idade, turno, já reportou?, Professor de Género em 24 h, prioridade Normal/Urgente/Crítico), 3 Dados dos casos (reportados, estado abertos/resolvidos, críticos e urgentes, lista com estado e prioridade).
+- O reporte no registo de presenças usa agora os 9 sinais de alerta; os casos mostram tipo e prioridade.
+- Menu de baixo com 6 abas; em ecrãs estreitos «Participantes» aparece como «Pessoas».
